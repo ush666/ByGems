@@ -1,0 +1,17 @@
+/* Background gradient */
+body {
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+}
+
+/* Centered card styling */
+.card {
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Login button customization */
+.btn-primary {
+    background: #4caf50 !important;
+    border: none !important;
+}

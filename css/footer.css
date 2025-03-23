@@ -1,0 +1,33 @@
+.bg-purple {
+    background-color: #4D3474 !important;
+    /* Purple background */
+}
+
+footer h5 {
+    color: #A18EBF;
+    /* Light grayish-purple headings */
+    font-weight: 600;
+}
+
+footer ul li {
+    color: #E5D8F5;
+    /* Light purple text */
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+footer p {
+    font-size: 16px;
+    color: #FFF;
+}
+
+footer img {
+    width: 80px;
+    /* Logo size */
+}
+
+footer ul li:hover {
+    color: #FFD700;
+    /* Highlight color on hover */
+    cursor: pointer;
+}
