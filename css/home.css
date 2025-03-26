@@ -79,6 +79,10 @@ footer a {
     font-size: 1rem;
 }
 
+.font-01 {
+    font-size: 0.8rem;
+}
+
 .fc .fc-daygrid-body-natural .fc-daygrid-day-events {
     margin-bottom: 0em !important;
 }

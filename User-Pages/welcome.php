@@ -41,7 +41,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
                         balloons to mascots, we've got it all! Ready to party? Basta party, ByGems!
                     </p>
                 </div>
-                <a href="../includes/logout.php">Logout</a>
 
                 <button class="btn-view"><a class="text-white" href="./home.php">Go to Homepage</a></button>
             </div>
