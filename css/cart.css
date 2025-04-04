@@ -1,0 +1,167 @@
+body {
+    background-color: #FFF9E5 !important;
+}
+
+.tab-content {
+    padding: 20px;
+    padding-bottom: 0%;
+    border-radius: 10px;
+    background: #fcfcfc;
+    border-top-left-radius: 0%;
+    height: 70vh !important;
+    overflow: auto;
+    border: 20px #fcfcfc solid;
+    border-top: 40px #fcfcfc solid;
+    border-right: 10px #fcfcfc solid;
+}
+
+.h-1 {
+    height: 25px;
+}
+
+.bg-w {
+    background-color: #fff;
+}
+
+.event-details-footer {
+    height: 10vh;
+    padding-top: 20px;
+    padding-bottom: 4px;
+    background: #fcfcfc;
+    border-top: 2px #d9d9d9 solid;
+}
+
+.btn-next,
+.btn-next-1 {
+    width: 20%;
+}
+
+#nextBtn:disabled {
+    cursor: not-allowed;
+}
+
+.service-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    background: #fff;
+    cursor: pointer;
+}
+
+.event-details-footer button:disabled {
+    cursor: not-allowed !important;
+}
+
+
+.place-order-section {
+    background-color: #ffffff;
+}
+
+.service-card img {
+    width: 80px;
+    height: 80px;
+    border-radius: 5px;
+    margin-right: 15px;
+}
+
+.service-details {
+    flex-grow: 1;
+}
+
+.cart-tab:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+input,
+textarea {
+    border: rgb(116, 116, 116) solid 0px !important;
+    background-color: #f2f2f2 !important;
+    padding: 15px 20px !important;
+    box-shadow: inset 2px 2px 6px #cecece,
+        inset -2px -2px 6px #ffffff;
+}
+
+input:focus,
+textarea:focus {
+    outline: none !important;
+    box-shadow: inset 2px 2px 6px #cecece,
+        inset -2px -2px 6px #ffffff !important;
+    border: #333 solid 0px !important;
+    border-radius: 3px !important;
+}
+
+input:checked {
+    box-shadow: 2px 2px 6px #cecece,
+        -2px -2px 6px #ffffff !important;
+}
+
+.cart-tab {
+    background: #fcfcfc !important;
+    border-bottom: #000 0px solid;
+    color: #333 !important;
+    width: 175px;
+    text-align: center;
+    transition: all 0.3s;
+    position: relative;
+    z-index: 1;
+    box-shadow: inset 2px 2px 4px #cecece,
+        inset -2px 2px 4px #ffffff;
+}
+
+.cart-tab:hover {
+    color: #000;
+    transition: all 0.3s;
+}
+
+.cart-tab.active {
+    font-weight: 500;
+    transition: all 0.3s;
+    position: relative;
+    z-index: 2;
+    box-shadow: none !important;
+}
+
+.pt-5 {
+    padding-top: 4rem !important;
+}
+
+textarea::placeholder,
+input::placeholder {
+    color: #8f8f8f !important;
+}
+
+.btn-purple {
+    background: #4D3474;
+    transition: all 0.3s;
+}
+
+.btn-purple:hover {
+    background: #503e6d;
+    transition: all 0.3s;
+}
+
+.bold {
+    font-weight: bold !important;
+}
+
+.btn-edit {
+    background-color: #F97316 !important;
+}
+
+.btn-shadow {
+    box-shadow: 4px 4px 8px #cecece,
+        -4px -4px 8px #ffffff;
+}
+
+.point {
+    cursor: pointer;
+}
+
+.border-1 {
+    border: 1px solid #c2c2c2;
+}

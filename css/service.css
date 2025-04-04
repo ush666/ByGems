@@ -1,5 +1,5 @@
 body {
-    background: #fff;
+    background-color: #FFF9E5;
     color: #fff;
     font-family: Arial, sans-serif;
     margin: 0;
@@ -165,4 +165,18 @@ ul.ul {
 
 .category-active:hover {
     background-color: #ff9a26;
+}
+
+/* Custom Styles */
+.tab-third-btn {
+    background: #e0785c;
+    color: white;
+    border-radius: 20px;
+    padding: 10px 20px;
+    transition: 0.3s;
+}
+
+.third-active,
+.third-active:hover {
+    background: #6EAE05;
 }

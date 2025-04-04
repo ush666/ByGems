@@ -1,3 +1,75 @@
+/* Montserrat Black */
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/fonts/Montserrat-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+/* Montserrat Black Italic */
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/fonts/Montserrat-BlackItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+}
+
+/* Montserrat Bold */
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/fonts/Montserrat-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+/* Montserrat Bold Italic */
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/fonts/Montserrat-BoldItalic.ttf') format('truetype');
+    font-weight: 700;
+    font-style: italic;
+}
+
+/* Montserrat Regular */
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/fonts/Montserrat-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+/* Montserrat Italic */
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/fonts/Montserrat-Italic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+}
+
+/* Montserrat Light */
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/fonts/Montserrat-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+/* Montserrat Light Italic */
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/fonts/Montserrat-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+
+
+* {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 /* General Section Styling */
 section {
     padding: 60px 0;
@@ -30,7 +102,7 @@ footer a {
     position: relative;
     width: 100%;
     overflow: hidden;
-    height: calc(80vh - 80px);
+    height: calc(94vh - 80px);
 }
 
 
@@ -234,4 +306,80 @@ a {
 
 .font-bold {
     font-weight: 700;
+}
+
+.carousel-item {
+    transition: opacity 1s ease-in-out;
+}
+
+.cart-tooltip {
+    --bs-tooltip-bg: #fff;
+    --bs-tooltip-color: #333;
+}
+
+.font-2 {
+    font-size: 1.5rem !important;
+}
+
+.cart-dropdown {
+    width: 300px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 15px;
+    background-color: white;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.cart-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    margin-right: 10px;
+}
+
+.cart-item h6 {
+    font-size: 14px;
+    margin: 0;
+}
+
+.cart-item p {
+    color: green;
+    font-weight: bold;
+    margin: 0;
+    font-size: 14px;
+}
+
+.cart-total {
+    font-weight: bold;
+    font-size: 16px;
+    color: green;
+    margin-top: 10px;
+    font-size: small;
+    padding: 0%;
+}
+
+.cart-btn {
+    background-color: #8e44ad;
+    color: white;
+    border-radius: 25px;
+    padding: 8px 12px;
+    text-align: center;
+    display: block;
+    text-decoration: none;
+    font-size: small;
+    height: 50%;
+}
+
+.fc .fc-button-primary:disabled {
+    color: #333 !important;
+    color: var(--fc-button-text-color, #fff);
+    background-color: #ffc107 !important;
+    background-color: var(#ffc507) !important;
+    border-color: #333 !important;
+    border-color: var(#333) !important;
 }

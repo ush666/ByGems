@@ -5,7 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Entertainers - ByGems</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="../css/service.css">
         <link rel="stylesheet" href="../css/home.css">
     </head>
@@ -33,31 +33,13 @@
                 <a href="./services_cakes-and-cupcakes.php" class="btn btn-warning mb-2 category-active">Cakes &
                     Cupcakes</a>
             </div>
-
-            <style>
-            /* Custom Styles */
-            .tab-third-btn {
-                background: #e0785c;
-                color: white;
-                border-radius: 20px;
-                padding: 10px 20px;
-                transition: 0.3s;
-            }
-
-            .third-active,
-            .third-active:hover {
-                background: #6EAE05;
-            }
-            </style>
             <!-- Tabs -->
             <div class="container">
                 <div class="d-flex justify-content-center gap-3">
-                    <a href="#cakes" class="tab-third-btn text-decoration-none third-active">Cakes</a>
-                    <a href="#tier-cakes" class="tab-third-btn text-decoration-none">Tier Cakes</a>
-                    <a href="#dessert-packages" class="tab-third-btn text-decoration-none active"
-                        aria-current="page">Dessert
-                        Packages</a>
-                    <a href="#cupcakes-brownies" class="tab-third-btn text-decoration-none">Cupcakes & Brownies</a>
+                    <a href="./services_cakes-and-cupcakes.php" class="tab-third-btn text-decoration-none third-active">Cakes</a>
+                    <a href="./services_tier-cakes.php" class="tab-third-btn text-decoration-none">Tier Cakes</a>
+                    <a href="./services_dessert-packages.php" class="tab-third-btn text-decoration-none">Dessert Packages</a>
+                    <a href="./services_cupcakes-brownies.php" class="tab-third-btn text-decoration-none">Cupcakes & Brownies</a>
                 </div>
             </div>
 
@@ -162,7 +144,7 @@
         <?php
         include("../components/footer.php");
         ?>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="../bootstrap-5.3.2-dist\js\bootstrap.bundle.min.js"></script>
 
     </body>
 

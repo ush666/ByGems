@@ -1,4 +1,5 @@
 <?php
+session_start();
 require '../includes/db.php';
 
 $error_message = '';
@@ -9,18 +10,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $email = $_POST['email'];
     $phone = $_POST['phone'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $password = $_POST['password'];
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
+    // Insert new user into the database
     $stmt = $pdo->prepare("INSERT INTO account (name, username, email, phone, password, role) VALUES (?, ?, ?, ?, ?, 'customer')");
 
     try {
-        $stmt->execute([$name, $username, $email, $phone, $password]);
-        $success_message = "Registration successful! <a href='customer_login.php'>Login here</a>";
+        $stmt->execute([$name, $username, $email, $phone, $hashed_password]);
+
+        // Automatically log the user in
+        $loginStmt = $pdo->prepare("SELECT user_id, password FROM account WHERE username = ? AND role = 'customer'");
+        $loginStmt->execute([$username]);
+        $user = $loginStmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['role'] = 'customer';
+            
+            // Redirect to welcome page
+            header("Location: welcome.php");
+            exit();
+        } else {
+            $error_message = "Failed to log in after registration.";
+        }
     } catch (PDOException $e) {
         $error_message = "Error: " . $e->getMessage();
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

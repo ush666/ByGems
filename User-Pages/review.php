@@ -5,7 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>ByGems Reviews with Modal</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="../css/home.css">
         <link rel="stylesheet" href="../css/review.css">
     </head>
@@ -15,7 +15,7 @@
         $reviews = "font-bold";
         include("../components/header.php");
         ?>
-        <div class="container py-5" style="padding-top: 80px !important;">
+        <div class="container py-5 mt-5" style="padding-top: 80px !important;">
             <div class="row g-4">
                 <!-- Review Card 1 -->
                 <div class="col-lg-6 col-md-12">
@@ -142,11 +142,11 @@
             </div>
         </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Footer -->
         <?php
         include("../components/footer.php");
         ?>
+        <script src="../bootstrap-5.3.2-dist\js\bootstrap.bundle.min.js"></script>
     </body>
 
 </html>

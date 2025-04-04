@@ -54,3 +54,8 @@
         Unforgettable Moments
         with ByGems!</p>
 </footer>
+
+
+<script type="module" src="../ionicons/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="../ionicons/dist/ionicons/ionicons.js"></script>
+<script src="../bootstrap/dist/js/bootstrap.bundle.min.js"></script>
