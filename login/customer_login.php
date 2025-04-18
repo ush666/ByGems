@@ -6,14 +6,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $stmt = $pdo->prepare("SELECT user_id, password FROM account WHERE username = ? AND role = 'customer'");
+    // Fetch user info, including role
+    $stmt = $pdo->prepare("SELECT user_id, password, role FROM account WHERE username = ?");
     $stmt->execute([$username]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user && password_verify($password, $user['password'])) {
         $_SESSION['user_id'] = $user['user_id'];
-        $_SESSION['role'] = 'customer';
-        header("Location: welcome.php");
+        $_SESSION['role'] = $user['role'];
+
+        if ($user['role'] === 'admin' || $user['role'] === 'staff') {
+            header("Location: ../Staff-Pages/cms_dashboard.php");
+        } elseif ($user['role'] === 'customer') {
+            header("Location: ../User-Pages/home.php");
+        } else {
+            // Optional: handle unknown roles
+            header("Location: error.php");
+        }
         exit();
     } else {
         $error_message = "Invalid username or password.";
@@ -21,13 +30,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>ByGems Login</title>
+        <title>ByGems | Login</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="../css/login.css">
     </head>

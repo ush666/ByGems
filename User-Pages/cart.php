@@ -4,16 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout Page</title>
+    <title>ByGems | Checkout Page</title>
     <link href="../bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/home.css">
     <link rel="stylesheet" href="../css/cart.css">
 </head>
 
 <body>
-    <?php include("../components/header.php"); ?>
+
+    <?php
+    $cart = "font-bold";
+    include("../components/header.php");
+    ?>
     <div class="container my-5 pt-5">
-        <ul class="nav nav-tabs" id="checkoutTabs">
+        <!-- Nav Tabs for Large Screens -->
+        <ul class="nav nav-tabs d-none d-md-flex" id="checkoutTabs">
             <li class="nav-item">
                 <a class="nav-link cart-tab active" data-bs-toggle="tab" href="#availedServices">Availed Services</a>
             </li>
@@ -25,36 +30,40 @@
             </li>
         </ul>
 
+
         <div class="tab-content">
             <!-- Availed Services Tab -->
             <div class="tab-pane fade show position-relative active" id="availedServices">
                 <h4>Availed Services</h4>
                 <div class="service-card d-flex align-items-center gap-3 shadow-sm" onclick="toggleServiceCheckbox(this, event)">
-                    <input type="checkbox" class="service-checkbox">
+                    <input type="checkbox" class="service-checkbox form-check-input">
                     <img src="../img/Image-0.png" alt="Service">
                     <div class="service-details">
                         <strong>Pop-up Package Set A</strong>
                         <p>₱4,650</p>
                     </div>
-                    <div class="d-flex flex-column gap-2">
-                        <a class="point text-danger">Remove</a>
-                        <a class="point text-primary" data-bs-toggle="modal" data-bs-target="#detailsModal" onclick="showDetails('Pop-up Package Set A','Set A','₱4,650')">View Details</a>
+                    <div class="d-flex flex-column flex-md-row gap-2 gap-md-4">
+                        <a class="point text-purple text-center d-flex align-items-center font-2" data-bs-toggle="modal" data-bs-target="#detailsModal" onclick="showDetails('Gemster Host Solo','Solo','₱2,000')"><ion-icon name="open-outline"></ion-icon></a>
+                        <a class="point text-danger text-center d-flex align-items-center font-2"><ion-icon name="trash-bin-outline"></ion-icon></a>
                     </div>
                 </div>
                 <div class="service-card d-flex align-items-center gap-3 shadow-sm" onclick="toggleServiceCheckbox(this, event)">
-                    <input type="checkbox" class="service-checkbox">
+                    <input type="checkbox" class="service-checkbox form-check-input">
                     <img src="../img/Image-4.png" alt="Service">
                     <div class="service-details">
                         <strong>Gemster Host Solo</strong>
                         <p>₱2,000</p>
                     </div>
-                    <div class="d-flex flex-column gap-2">
-                        <a class="point text-danger">Remove</a>
-                        <a class="point text-primary" data-bs-toggle="modal" data-bs-target="#detailsModal" onclick="showDetails('Gemster Host Solo','Solo','₱2,000')">View Details</a>
+                    <div class="d-flex flex-column flex-md-row gap-2 gap-md-4">
+                        <a class="point text-purple text-center d-flex align-items-center font-2" data-bs-toggle="modal" data-bs-target="#detailsModal" onclick="showDetails('Gemster Host Solo','Solo','₱2,000')"><ion-icon name="open-outline"></ion-icon></a>
+                        <a class="point text-danger text-center d-flex align-items-center font-2"><ion-icon name="trash-bin-outline"></ion-icon></a>
                     </div>
                 </div>
                 <div class="event-details-footer d-flex justify-content-end position-sticky z-3 bottom-0 left-0">
-                    <button class="btn btn-edit btn-next text-white" id="nextBtn" disabled>
+                    <div class="d-flex justify-content-between d-md-none mb-3 px-3">
+                        <p class="text-danger"><strong>Note:</strong> <span class="text-black">Select an Item or Package first</span></p>
+                    </div>
+                    <button class="btn btn-edit btn-next text-white btn-shadow" id="nextBtn" disabled>
                         <ion-icon name="arrow-forward-circle" style="font-size:1.2rem;"></ion-icon> Next
                     </button>
                 </div>
@@ -203,7 +212,6 @@
     </style>
 
     <?php include("../components/footer.php"); ?>
-    <script src="../bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // First tab: enable Next when at least one service is checked.
         const checkboxes = document.querySelectorAll('.service-checkbox');
@@ -420,6 +428,16 @@
             document.getElementById('modalPrice').textContent = price;
         }
     </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
+        });
+    </script>
+    </script>
+
+
 
 </body>
 

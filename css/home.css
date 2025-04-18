@@ -70,6 +70,7 @@
     padding: 0;
     box-sizing: border-box;
 }
+
 /* General Section Styling */
 section {
     padding: 60px 0;
@@ -84,6 +85,20 @@ section {
 .card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.btn-purple {
+    background: #4D3474;
+    transition: all 0.3s;
+}
+
+.btn-purple:hover {
+    background: #503e6d;
+    transition: all 0.3s;
+}
+
+.btn-shadow {
+    box-shadow: 4px 4px 8px #cecece, -4px -4px 8px #ffffff;
 }
 
 /* Footer Styling */
@@ -383,3 +398,17 @@ a {
     border-color: #333 !important;
     border-color: var(#333) !important;
 }
+
+ .drop-down-icon {
+    position: absolute;
+    right: -3px !important;
+    bottom: -4px !important;
+    display: flex;
+    background: #fff;
+    border-radius: 50%;
+    height: 17px;
+    width: 17px;
+    justify-content: center;
+    align-items: center;
+    border: #ffb300 solid 2px;
+ }

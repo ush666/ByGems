@@ -34,6 +34,11 @@ body {
 .btn-next,
 .btn-next-1 {
     width: 20%;
+    align-content: center !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px;
 }
 
 #nextBtn:disabled {
@@ -104,13 +109,15 @@ input:checked {
     background: #fcfcfc !important;
     border-bottom: #000 0px solid;
     color: #333 !important;
-    width: 175px;
+    max-width: 175px;
+    min-width: 100px;
     text-align: center;
     transition: all 0.3s;
     position: relative;
     z-index: 1;
     box-shadow: inset 2px 2px 4px #cecece,
         inset -2px 2px 4px #ffffff;
+    font-size: 0.8rem;
 }
 
 .cart-tab:hover {
@@ -135,27 +142,13 @@ input::placeholder {
     color: #8f8f8f !important;
 }
 
-.btn-purple {
-    background: #4D3474;
-    transition: all 0.3s;
-}
-
-.btn-purple:hover {
-    background: #503e6d;
-    transition: all 0.3s;
-}
-
 .bold {
     font-weight: bold !important;
 }
 
 .btn-edit {
     background-color: #F97316 !important;
-}
-
-.btn-shadow {
-    box-shadow: 4px 4px 8px #cecece,
-        -4px -4px 8px #ffffff;
+    min-height: 32px;
 }
 
 .point {
@@ -164,4 +157,52 @@ input::placeholder {
 
 .border-1 {
     border: 1px solid #c2c2c2;
+}
+
+.step-btn {
+    width: 40px;
+    height: 40px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 24px;
+}
+
+.step-btn.active {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
+
+.offcanvas.offcanvas-start.show {
+    background-color: rgb(255, 193, 7);
+    color: #000 !important;
+}
+
+.custom-tooltip {
+    --bs-tooltip-bg: var(--bd-violet-bg);
+    --bs-tooltip-color: var(--bs-white);
+}
+
+.navbar-toggler {
+    color: #ffffff00;
+    border: #ffffff00 2px solid;
+}
+
+.form-check-input {
+    padding: 0pc !important;
+}
+
+.form-check-input:checked {
+    background-color: #A2678A !important;
+    border-color: #A2678A !important;
+    padding: 0pc !important;
+}
+
+.text-purple {
+    color: #7e0e51 !important;
+}
+
+.service-checkbox {
+    height: 70px;
+    width: 20px;
 }
