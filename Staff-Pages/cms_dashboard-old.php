@@ -15,7 +15,7 @@ $bookedEvents = $pdo->query("
     WHERE request_status = 'Approved'
 ")->fetchAll(PDO::FETCH_ASSOC);
 
-if ($user_role == 'admin') {
+if ($user_role == 'staff') {
     $total_revenue = $pdo->query("SELECT SUM(amount_paid) FROM payment WHERE payment_status = 'Paid'")->fetchColumn() ?: 0;
     $monthly_revenue = $pdo->query("SELECT SUM(amount_paid) FROM payment WHERE MONTH(paid_date) = MONTH(CURRENT_DATE) AND YEAR(paid_date) = YEAR(CURRENT_DATE) AND payment_status = 'Paid'")->fetchColumn() ?: 0;
     $yearly_revenue = $pdo->query("SELECT SUM(amount_paid) FROM payment WHERE YEAR(paid_date) = YEAR(CURRENT_DATE) AND payment_status = 'Paid'")->fetchColumn() ?: 0;

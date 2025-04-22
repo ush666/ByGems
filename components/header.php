@@ -1,14 +1,18 @@
 <?php
-require_once '../includes/db.php'; // Database connection file
 session_start();
+require_once __DIR__ . '/../includes/db.php';
+
+// Initialize variables
+$user = null;
+$cartItems = [];
+$cartTotal = 0;
+
 // Check if the user is logged in
 if (isset($_SESSION['user_id'])) {
-
-
-    // Fetch user data from the database
     $userId = $_SESSION['user_id'];
 
     try {
+        // Fetch user data
         $stmt = $pdo->prepare("SELECT username, name, email FROM account WHERE user_id = ?");
         $stmt->execute([$userId]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -18,11 +22,49 @@ if (isset($_SESSION['user_id'])) {
             header("Location: ../User-Pages/customer_login.php");
             exit();
         }
+
+        // Fetch the active cart
+        $cartStmt = $pdo->prepare("
+            SELECT id AS cart_id 
+            FROM cart 
+            WHERE user_id = :user_id AND status = 'active'
+            ORDER BY created_at DESC 
+            LIMIT 1
+        ");
+        $cartStmt->execute([':user_id' => $userId]);
+        $cart = $cartStmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($cart) {
+            // Fetch cart items and their corresponding service details
+            $itemsStmt = $pdo->prepare("
+                SELECT 
+                    ci.cart_item_id,
+                    ci.quantity,
+                    ci.price AS cart_price,
+                    s.service_name,
+                    s.price AS service_price,
+                    s.image
+                FROM cart_items ci
+                JOIN services s ON ci.service_id = s.service_id
+                WHERE ci.cart_id = :cart_id 
+                  AND ci.status = 'active'
+                  AND s.status = 'enabled'
+            ");
+            $itemsStmt->execute([':cart_id' => $cart['cart_id']]);
+            $cartItems = $itemsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Calculate total
+            foreach ($cartItems as $item) {
+                $price = $item['cart_price'] !== null ? $item['cart_price'] : $item['service_price'];
+                $cartTotal += $price * $item['quantity'];
+            }
+        }
     } catch (PDOException $e) {
         die("Database error: " . $e->getMessage());
     }
 }
 ?>
+
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-sm navbar-light bg-warning fixed-top">
@@ -76,7 +118,7 @@ if (isset($_SESSION['user_id'])) {
             </div>
         </div>
 
-        <div class="ms-auto displa  ">
+        <div class="ms-auto">
             <?php
             // Simulating user authentication status (replace with your actual session check)
             $isLoggedIn = isset($_SESSION['user_id']);
@@ -101,63 +143,53 @@ if (isset($_SESSION['user_id'])) {
                             <ion-icon name="notifications-outline" size="medium"></ion-icon>
                         </a>
                     </li>
+                    <!--HERE-->
                     <li class="nav-item <?= $cart ?> dropdown position-relative font-2 d-flex align-items-center font-brown me-2">
                         <a class="nav-link d-flex align-items-center" href="#" id="cartDropdown" role="button">
                             <ion-icon name="cart-outline" size="medium"></ion-icon>
+                            <?php if (count($cartItems) > 0): ?>
+                                <span class="position-absolute top-0 end-0  badge rounded-pill bg-danger" style="font-size: 10px;">
+                                    <?= count($cartItems) ?>
+                                </span>
+                            <?php endif; ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end position-absolute cart-dropdown z-3" aria-labelledby="cartDropdown">
                             <li class="px-3 pb-2 text-center">
                                 <strong>Cart</strong>
                             </li>
-                            <li>
-                                <div class="cart-item">
-                                    <img src="img1.jpg" alt="Item 1">
-                                    <div>
-                                        <h6>Prop-up Package Set-A</h6>
-                                        <p>₱ 4,650</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="cart-item">
-                                    <img src="img2.jpg" alt="Item 2">
-                                    <div>
-                                        <h6>Gemster Host Solo</h6>
-                                        <p>₱ 2,000</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="cart-item">
-                                    <img src="img3.jpg" alt="Item 3">
-                                    <div>
-                                        <h6>Magician (Package Show)</h6>
-                                        <p>₱ 3,000</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="cart-item">
-                                    <img src="img4.jpg" alt="Item 4">
-                                    <div>
-                                        <h6>Character Mascot</h6>
-                                        <p>₱ 3,600</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="cart-item">
-                                    <img src="img5.jpg" alt="Item 5">
-                                    <div>
-                                        <h6>Food Cart: Cotton Candy</h6>
-                                        <p>₱ 2,500</p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="px-3 pt-2 row">
-                                <div class="col-6 cart-total">Cart Total: ₱ 15,750</div>
-                                <a href="../User-Pages/cart.php" class="col-6 cart-btn text-center">View Cart</a>
-                            </li>
+
+                            <?php if (!empty($cartItems)): ?>
+                                <?php foreach ($cartItems as $item): ?>
+                                    <?php
+                                    $price = $item['cart_price'] !== null ? $item['cart_price'] : $item['service_price'];
+                                    $itemTotal = $price * $item['quantity'];
+                                    ?>
+                                    <li>
+                                        <div class="cart-item">
+                                            <?php if (!empty($item['image'])): ?>
+                                                <img class="objeect-fit-cover" src="<?= '../uploads/' . htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['service_name']) ?>">
+                                            <?php endif; ?>
+                                            <div>
+                                                <h6><?= htmlspecialchars($item['service_name']) ?></h6>
+                                                <p>₱ <?= number_format($price, 2) ?> × <?= $item['quantity'] ?></p>
+                                                <p class="item-total">₱ <?= number_format($itemTotal, 2) ?></p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                <?php endforeach; ?>
+
+                                <li class="px-3 pt-2 row">
+                                    <div class="col-6 cart-total">Total: ₱ <?= number_format($cartTotal, 2) ?></div>
+                                    <a href="../User-Pages/cart.php" class="col-6 cart-btn text-center">View Cart</a>
+                                </li>
+
+                            <?php else: ?>
+                                <li class="px-3 py-2 text-center">
+                                    <p>Your cart is empty</p>
+                                    <a href="../services/prop-up_packages.php" class="btn btn-sm btn-purple text-white bold">Browse Services</a>
+                                </li>
+                            <?php endif; ?>
+
                         </ul>
                     </li>
 
@@ -176,6 +208,11 @@ if (isset($_SESSION['user_id'])) {
                                 <li class="px-3 py-1">
                                     <span><?= ucfirst($user['name']) ?></span>
                                     <div class="text-muted font-01"><?= $user['email'] ?></div>
+                                </li>
+                            </a>
+                            <a href="../User-Pages/invoice-list.php">
+                                <li class="px-3 py-1">
+                                    <span>Invoice List</span>
                                 </li>
                             </a>
                             <li>
@@ -215,3 +252,4 @@ if (isset($_SESSION['user_id'])) {
         });
     });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

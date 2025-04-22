@@ -355,6 +355,7 @@ a {
     height: 50px;
     border-radius: 8px;
     margin-right: 10px;
+    object-fit: cover;
 }
 
 .cart-item h6 {
@@ -399,7 +400,7 @@ a {
     border-color: var(#333) !important;
 }
 
- .drop-down-icon {
+.drop-down-icon {
     position: absolute;
     right: -3px !important;
     bottom: -4px !important;
@@ -411,4 +412,73 @@ a {
     justify-content: center;
     align-items: center;
     border: #ffb300 solid 2px;
- }
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.dt-button.buttons-print {
+    background: #ffb300 !important;
+    color: white;
+    font-weight: bold;
+    border: none !important;
+    border-radius: 25px;
+    padding: 5px 30px;
+    border-radius: 50px;
+    background: #ffffff;
+    box-shadow: 7px 7px 13px #d9d9d9,
+        -7px -7px 13px #ffffff;
+    transition: all 0.3s;
+
+}
+
+.dt-button.buttons-print:hover {
+    background: #ffc43a !important;
+    transition: all 0.3s;
+    transform: translateY(-5px);
+}
+
+/* Yellow dates (1 request) */
+.yellow-day {
+    background-color: #ffc107 !important; /* Yellow background */
+    color: black !important; /* Black text */
+}
+
+/* Red dates (2 requests) */
+.red-day {
+    background-color: #f44336 !important; /* Red background */
+    color: white !important; /* White text */
+}
+
+/* Disabled dates (fully booked) */
+.disabled {
+    background-color: #f1f1f1 !important; /* Light gray background */
+    color: #ccc !important; /* Gray text */
+    pointer-events: none !important; /* Disable clicking */
+}
+
+/* Badge displaying the number of bookings on each day */
+.order-count-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.flatpickr-months .flatpickr-month {
+    height: 50px !important;
+}
+
+.numInputWrapper,
+.flatpickr-monthDropdown-months,
+.flatpickr-current-month input.cur-year {
+    width: 85px !important;
+
+    border: none !important;
+}

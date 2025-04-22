@@ -1,21 +1,31 @@
+<?php
+session_start();
+require_once '../includes/db.php';
+
+// Fetch services under "Dessert Packages" category with active status
+$sql = "SELECT * FROM services WHERE category = 'Dessert Packages' AND status = 'enabled'";
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$servicess = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>ByGems | Party Packages</title>
-        <link href="../bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="../css/service.css">
-        <link rel="stylesheet" href="../css/home.css">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ByGems | Party Packages</title>
+    <link href="../bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/service.css">
+    <link rel="stylesheet" href="../css/home.css">
+</head>
 
-    <body>
-        <?php
-        $services = "font-bold";
-        include("../components/header.php");
-        ?>
-        <div class="container py-5" style="padding-top: 100px !important;">
+<body>
+    <?php
+    $services = "font-bold";
+    include("../components/header.php");
+    ?>
+    <div class="container py-5" style="padding-top: 100px !important;">
         <!-- Tabs Section -->
         <div class="tabs">
             <a href="./prop-up_packages.php" class="tab-btn">Prop-Up Packages</a>
@@ -43,89 +53,41 @@
             </div>
         </div>
 
-            <div class="card-container">
-
-                <!-- Card 1 -->
-                <div class="card">
-                    <img src="../img/Image.png" alt="Party Package 1">
-                    <div class="card-content">
-                        <div class="card-title">Dessert Package - 1</div>
-                        <div class="card-price">₱ 5,900</div>
-                        <ul class="card-description ul">
-                            <li>approx. good for 70 heads</li>
-                            <li>Tablea Rocky Road Brownies</li>
-                            <li>Mini Cup Cakes - 3 Different Flavors</li>
-                            <li>Mini Slice Cake</li>
-                            <li>Mini Shot Glass</li>
-                        </ul>
-                        <button class="btn btn-success">Add to Cart</button>
+        <div class="card-container">
+            <?php if (empty($servicess)): ?>
+                <p class="text-muted">No Dessert Packages available right now.</p>
+            <?php else: ?>
+                <?php foreach ($servicess as $service) : ?>
+                    <!-- Card 1 -->
+                    <div class="card">
+                        <img src="../uploads/<?php echo htmlspecialchars($service['image']); ?>" alt="<?php echo htmlspecialchars($service['service_name']); ?>">
+                        <div class="card-content">
+                            <div class="card-title"><?php echo htmlspecialchars($service['service_name']); ?></div>
+                            <div class="card-price">
+                                ₱ <?php echo number_format($service['price'], 2); ?> <span class="card-text">/ PC</span>
+                                <?php if (!empty($service['price_unit'])) : ?>
+                                    <span class="card-text">/ <?php echo htmlspecialchars($service['price_unit']); ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <p class="card-description">
+                                <?php echo htmlspecialchars($service['description']); ?>
+                            </p>
+                            <button class="btn-cart add-to-cart"
+                                data-service-id="<?php echo $service['service_id']; ?>"
+                                data-price="<?php echo $service['price']; ?>">
+                                Add to Cart
+                            </button>
+                        </div>
                     </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="card">
-                    <img src="../img/Image.png" alt="Party Package 2">
-                    <div class="card-content">
-                        <div class="card-title">Dessert Package - 2</div>
-                        <div class="card-price">₱ 8,200</div>
-                        <ul class="card-description ul">
-                            <li>approx. good for 70 heads</li>
-                            <li>Tablea Rocky Road Brownies</li>
-                            <li>Mini Cup Cakes - 3 Different Flavors</li>
-                            <li>Mini Slice Cake</li>
-                            <li>Carrot Cake</li>
-                            <li>Butter Cookies</li>
-                            <li>Mini Cake Donuts</li>
-                        </ul>
-                        <button class="btn btn-success">Add to Cart</button>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="card">
-                    <img src="../img/Image.png" alt="Party Package 3">
-                    <div class="card-content">
-                        <div class="card-title">Dessert Package - 3</div>
-                        <div class="card-price">₱ 4,900</div>
-                        <ul class="card-description ul">
-                            <li>approx. good for 80 heads</li>
-                            <li>Mini Cup Cakes - 3 Different Flavors</li>
-                            <li>Mini Shot Glass</li>
-                            <li>Carrot Cake</li>
-                            <li>Ube Cream Cake</li>
-                            <li>Dark Mocha Cake</li>
-                            <li>Mango La Creme Cake</li>
-                            <li>Coffee Peanut Butter Brownies</li>
-                            <li>Triple Choco Walnut Cookies</li>
-                            <li>Revel Bars</li>
-                        </ul>
-                        <button class="btn btn-success">Add to Cart</button>
-                    </div>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="card">
-                    <img src="../img/Image.png" alt="Party Package 4">
-                    <div class="card-content">
-                        <div class="card-title">Dessert Package - 4</div>
-                        <div class="card-price">₱ 25,000</div>
-                        <ul class="card-description ul">
-                            <li>approx. good for 70 heads</li>
-                            <li>Tablea Rocky Road Brownies</li>
-                            <li>Mini Cup Cakes - 3 Different Flavors</li>
-                            <li>Mini Slice Cake</li>
-                            <li>Mini Shot Glass</li>
-                        </ul>
-                        <button class="btn btn-success">Add to Cart</button>
-                    </div>
-                </div>
-            </div>
-
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
-        <?php
-        include("../components/footer.php");
-        ?>
-        <script src="../bootstrap-5.3.2-dist\js\bootstrap.bundle.min.js"></script>
-        </body>
+    </div>
+    <?php
+    include("../components/footer.php");
+    ?>
+    
+    <script src="../js/ajax.js"></script>
+</body>
 
 </html>

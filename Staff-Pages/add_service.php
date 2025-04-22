@@ -4,7 +4,7 @@ require_once '../includes/db.php';
 
 // Restrict access to staff and admin
 if (!isset($_SESSION['user_id']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'staff')) {
-    header("Location: login.php");
+    header("Location: ../login/customer_login.php");
     exit();
 }
 
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $stmt = $pdo->prepare("INSERT INTO services (service_name, category, price, description, image, status) VALUES (?, ?, ?, ?, ?, 'enabled')");
 
-                $final_price = ($_SESSION['role'] === 'admin' && !empty($price)) ? $price : null;
+                $final_price = ($_SESSION['role'] === 'staff' && !empty($price)) ? $price : null;
 
                 $stmt->execute([$service_name, $category, $final_price, $description, $image]);
                 $success = "Service added successfully!";

@@ -49,58 +49,63 @@ $customers = $pdo->query("SELECT user_id, username FROM account WHERE role = 'cu
 if ($isAjax):
 ?>
 
-<form action="../events/edit_table_event.php?id=<?= $event['event_id'] ?>" method="POST">
-    <input type="hidden" name="event_id" value="<?= $event['event_id'] ?>">
+    <form action="../events/edit_table_event.php?id=<?= $event['event_id'] ?>" method="POST">
+        <input type="hidden" name="event_id" value="<?= $event['event_id'] ?>">
+        <div class="row">
+            <div class="mb-3 col-6">
+                <label for="customer_id" class="form-label">Customer</label>
+                <select name="customer_id" class="form-select" required>
+                    <?php foreach ($customers as $customer): ?>
+                        <option value="<?= $customer['user_id'] ?>" <?= $customer['user_id'] == $event['user_id'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($customer['username']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="mb-3 col-6">
+                <label for="celebrant_name" class="form-label">Celebrant Name</label>
+                <input type="text" class="form-control" name="celebrant_name" value="<?= htmlspecialchars($event['celebrant_name']) ?>" required>
+            </div>
+        </div>
 
-    <div class="mb-3">
-        <label for="customer_id" class="form-label">Customer</label>
-        <select name="customer_id" class="form-select" required>
-            <?php foreach ($customers as $customer): ?>
-                <option value="<?= $customer['user_id'] ?>" <?= $customer['user_id'] == $event['user_id'] ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($customer['username']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
 
-    <div class="mb-3">
-        <label for="celebrant_name" class="form-label">Celebrant Name</label>
-        <input type="text" class="form-control" name="celebrant_name" value="<?= htmlspecialchars($event['celebrant_name']) ?>" required>
-    </div>
+        <div class="mb-3">
+            <label for="event_location" class="form-label">Event Location</label>
+            <input type="text" class="form-control" name="event_location" value="<?= htmlspecialchars($event['event_location']) ?>" required>
+        </div>
 
-    <div class="mb-3">
-        <label for="event_location" class="form-label">Event Location</label>
-        <input type="text" class="form-control" name="event_location" value="<?= htmlspecialchars($event['event_location']) ?>" required>
-    </div>
+        <div class="mb-3">
+            <label for="event_datetime" class="form-label">Event Date & Time</label>
+            <input type="datetime-local" class="form-control" name="event_datetime"
+                value="<?= date('Y-m-d\TH:i', strtotime($event['event_date'])) ?>" required>
+        </div>
 
-    <div class="mb-3">
-        <label for="event_datetime" class="form-label">Event Date & Time</label>
-        <input type="datetime-local" class="form-control" name="event_datetime"
-               value="<?= date('Y-m-d\TH:i', strtotime($event['event_date'])) ?>" required>
-    </div>
-
-    <div class="mb-3">
-        <label for="payment_status" class="form-label">Payment Status</label>
-        <select name="payment_status" class="form-select">
-            <option value="pending" <?= $event['payment_status'] === 'pending' ? 'selected' : '' ?>>Pending</option>
-            <option value="paid" <?= $event['payment_status'] === 'paid' ? 'selected' : '' ?>>Paid</option>
-        </select>
-    </div>
-
-    <div class="mb-3">
-        <label for="request_status" class="form-label">Request Status</label>
-        <select name="request_status" class="form-select">
-            <option value="approved" <?= $event['request_status'] === 'Approved' ? 'selected' : '' ?>>Approved</option>
-            <option value="pending" <?= $event['request_status'] === 'Pending' ? 'selected' : '' ?>>Pending</option>
-            <option value="rejected" <?= $event['request_status'] === 'Rejected' ? 'selected' : '' ?>>Rejected</option>
-        </select>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Update Event</button>
-</form>
+        <div class="row">
+            <div class="mb-3 col-6">
+                <label for="payment_status" class="form-label">Payment Status</label>
+                <select name="payment_status" class="form-select">
+                    <option value="pending" <?= $event['payment_status'] === 'partial' ? 'selected' : '' ?>>Pending</option>
+                    <option value="paid" <?= $event['payment_status'] === 'fullypaid' ? 'selected' : '' ?>>Paid</option>
+                </select>
+            </div>
+    
+            <div class="mb-3 col-6">
+                <label for="request_status" class="form-label">Request Status</label>
+                <select name="request_status" class="form-select">
+                    <option value="approved" <?= $event['request_status'] === 'approved' ? 'selected' : '' ?>>Approved</option>
+                    <option value="pending" <?= $event['request_status'] === 'pending' ? 'selected' : '' ?>>Pending</option>
+                    <option value="completed" <?= $event['request_status'] === 'completed' ? 'selected' : '' ?>>completed</option>
+                    <option value="cancelled" <?= $event['request_status'] === 'cancelled' ? 'selected' : '' ?>>Cancelled</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-purple text-white bold">Update Event</button>
+        </div>
+    </form>
 
 <?php
-exit;
+    exit;
 endif;
 
 // If not AJAX, process form submission and redirect

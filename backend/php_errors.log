@@ -1,0 +1,2 @@
+[20-Apr-2025 10:53:32 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\ByGems\ByGems\backend\getCartData.php on line 17
+[20-Apr-2025 10:53:32 Europe/Berlin] PDO Error: SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.entertainer_duration_options' in 'field list'

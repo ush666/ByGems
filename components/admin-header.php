@@ -28,7 +28,7 @@ if (isset($_SESSION['user_id'])) {
 ?>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-sm navbar-light bg-warning fixed-top">
+<nav class="navbar navbar-expand-sm navbar-light bg-warning fixed-top admin-header">
     <div class="container-fluid position-relative p-0 ps-3 pe-3" style="min-height: 50px; max-width: none !important;">
         <!-- Navbar Toggler - Moved to the left -->
         <button class="navbar-toggler me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
@@ -61,7 +61,7 @@ if (isset($_SESSION['user_id'])) {
                 <?php if ($isLoggedIn): ?>
 
                 <?php else:
-                    header("Location: ../Staff-Pages/staff_login.php");
+                    header("Location: ../login/customer_login.php");
                 endif; ?>
             </div>
         </div>

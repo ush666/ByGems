@@ -1,3 +1,13 @@
+<?php
+session_start();
+require_once '../includes/db.php';
+
+// Fetch services under "Tier Cakes" category with active status
+$sql = "SELECT * FROM services WHERE category = 'Tier Cakes' AND status = 'enabled'";
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$servicess = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -45,108 +55,41 @@
             </div>
         </div>
 
-        <section class="container grid-container">
-            <div class="grid">
-                <!-- Card 1 -->
-                <div class="card">
-                    <img src="./img/cake1.jpg" alt="1 Tier Cake" class="card-img">
-                    <div class="card-content">
-                        <h3>Classic Vanilla</h3>
-                        <p>₱ 3,100</p>
-                        <p>Size: 9 x 4 Round</p>
-                        <p class="card-description">Cake designs are customized based on the party theme and the client's specific preferences. Book at least 5 days before the event.</p>
-                        <div class="card-footer">
-                            <button class="btn btn-success">Add to Cart</button>
-                            <div class="arrows">
-                                <button class="btn arrow-btn">&lt;</button>
-                                <button class="btn arrow-btn">&gt;</button>
+        <div class="card-container">
+            <?php if (empty($servicess)): ?>
+                <p class="text-muted">No Tiered Cakes available right now.</p>
+            <?php else: ?>
+                <?php foreach ($servicess as $service) : ?>
+                    <!-- Card 1 -->
+                    <div class="card">
+                        <img src="../uploads/<?php echo htmlspecialchars($service['image']); ?>" alt="<?php echo htmlspecialchars($service['service_name']); ?>">
+                        <div class="card-content">
+                            <div class="card-title"><?php echo htmlspecialchars($service['service_name']); ?></div>
+                            <div class="card-price">
+                                ₱ <?php echo number_format($service['price'], 2); ?> <span class="card-text">/ PC</span>
+                                <?php if (!empty($service['price_unit'])) : ?>
+                                    <span class="card-text">/ <?php echo htmlspecialchars($service['price_unit']); ?></span>
+                                <?php endif; ?>
                             </div>
+                            <p class="card-description">
+                                <?php echo htmlspecialchars($service['description']); ?>
+                            </p>
+                            <button class="btn-cart add-to-cart"
+                                data-service-id="<?php echo $service['service_id']; ?>"
+                                data-price="<?php echo $service['price']; ?>">
+                                Add to Cart
+                            </button>
                         </div>
                     </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="card">
-                    <img src="./img/cake2.jpg" alt="Chocolate Moist Cake" class="card-img">
-                    <div class="card-content">
-                        <h3>1 Layer Cake Chocolate Moist</h3>
-                        <p>₱ 1,650</p>
-                        <p>Size: 6 x 3 Round</p>
-                        <p class="card-description">Cake designs are customized based on the party theme and the client's specific preferences. Book at least 5 days before the event.</p>
-                        <div class="card-footer">
-                            <button class="btn btn-success">Add to Cart</button>
-                            <div class="arrows">
-                                <button class="btn arrow-btn">&lt;</button>
-                                <button class="btn arrow-btn">&gt;</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="card">
-                    <img src="./img/cake3.jpg" alt="2 Tier Cake" class="card-img">
-                    <div class="card-content">
-                        <h3>Tier 2 Cake Flavor: Classic Vanilla</h3>
-                        <p>₱ 4,560</p>
-                        <p>Base: 9x5 Round<br>Top: 6x4 Round</p>
-                        <p class="card-description">Cake designs are customized based on the party theme and the client's specific preferences. Book at least 5 days before the event.</p>
-                        <div class="card-footer">
-                            <button class="btn btn-success">Add to Cart</button>
-                            <div class="arrows">
-                                <button class="btn arrow-btn">&lt;</button>
-                                <button class="btn arrow-btn">&gt;</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="card">
-                    <img src="./img/cake4.jpg" alt="3 Tier Cake" class="card-img">
-                    <div class="card-content">
-                        <h3>Tier 3 Cake Flavor: Classic Vanilla</h3>
-                        <p>₱ 4,560</p>
-                        <p>Base: 12x4 Round<br>Middle: 9x4 Round<br>Top: 6x4 Round</p>
-                        <p class="card-description">Cake designs are customized based on the party theme and the client's specific preferences. Book at least 5 days before the event.</p>
-                        <div class="card-footer">
-                            <button class="btn btn-success">Add to Cart</button>
-                            <div class="arrows">
-                                <button class="btn arrow-btn">&lt;</button>
-                                <button class="btn arrow-btn">&gt;</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 5 -->
-                <div class="card">
-                    <img src="./img/cake5.jpg" alt="3 Tier JR Cake" class="card-img">
-                    <div class="card-content">
-                        <h3>Tier 3 JR Cake Flavor: Classic Vanilla</h3>
-                        <p>₱ 5,450</p>
-                        <p>Base: 9x4 Round<br>Middle: 7x4 Round<br>Top: 5x4 Round</p>
-                        <p class="card-description">Cake designs are customized based on the party theme and the client's specific preferences. Book at least 5 days before the event.</p>
-                        <div class="card-footer">
-                            <button class="btn btn-success">Add to Cart</button>
-                            <div class="arrows">
-                                <button class="btn arrow-btn">&lt;</button>
-                                <button class="btn arrow-btn">&gt;</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-
-
-
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
     </div>
     <?php
     include("../components/footer.php");
     ?>
-    <script src="../bootstrap-5.3.2-dist\js\bootstrap.bundle.min.js"></script>
+
+    <script src="../js/ajax.js"></script>
 
 </body>
 

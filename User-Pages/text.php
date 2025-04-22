@@ -1,208 +1,88 @@
-<main>
-            <header class="page-header page-header-dark bg-gradient-primary-to-secondary pb-10">
-                <div class="container-xl px-4">
-                    <div class="page-header-content pt-4">
-                        <div class="row align-items-center justify-content-between">
-                            <div class="col-auto mt-4">
-                                <h1 class="page-header-title">
-                                    <div class="page-header-icon"><i data-feather="activity"></i></div>
-                                    Reports
-                                </h1>
-                                <div class="page-header-subtitle">Your Trust, Our Commitment. Ensuring Quality Every
-                                    Time.
-                                </div>
-                            </div>
-                            <div class="text-end">
-                                <a href="#" class="btn btn-report bold ps-5 pe-5" target="_blank">
-                                    <i class="fas fa-print me-2"></i> View Reports
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </header>
-            <div class="container-xl px-8 mt-n10">
-                <div class="row">
-                    <div class="col-lg-6 col-xl-4 mb-4">
-                        <div class=" bg-white-admin tab-shadow h-100">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="me-3">
-                                        <a class="text-brown medium stretched-link" href="{{ route('today') }}">Order
-                                            Today</a>
-                                        <div class="text-lg fw-bold" id="orderTodayCount">Loading...</div>
-                                    </div>
-                                    <i class="feather-xl" data-feather="clipboard"></i>
-                                </div>
-                            </div>
-                            <div class="card-footer d-flex align-items-center justify-content-between small">
-                                <a class="text-white"></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-xl-4 mb-4">
-                        <div class=" bg-white-admin tab-shadow h-100">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="me-3">
-                                        <a class="text-brown medium stretched-link" href="{{ route('request') }}">All
-                                            order Request</a>
-                                        <div class="text-lg fw-bold" id="pendingOrdersCount">Loading...</div>
-                                    </div>
-                                    <i class="feather-xl text-brown" data-feather="book-open"></i>
-                                </div>
-                            </div>
-                            <div class="card-footer d-flex align-items-center justify-content-between small">
-                                <a class="text-white"></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-xl-4 mb-4">
-                        <div class=" bg-white-admin tab-shadow text-white h-100">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="me-3">
-                                        <a class="text-brown medium stretched-link"
-                                            href="{{ route('completed') }}">Completed Orders This Month</a>
-                                        <div class="text-lg fw-bold" id="completedCount">Loading...</div>
-                                    </div>
-                                    <i class="feather-xl" data-feather="check-square"></i>
-                                </div>
-                            </div>
-                            <div class="card-footer d-flex align-items-center justify-content-between small">
-                                <a class="text-white"></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Charts -->
-                <div class="row">
-                    <!-- Earnings Breakdown -->
-                    <div class="col-xl-6 mb-4">
-                        <div class="card card-header-actions h-100">
-                            <div class="card-header">
-                                Earnings Breakdown
-                                <div class="d-flex align-items-center">
-                                    <button class="btn btn-sm btn-orange me-2 print-chart-btn"
-                                        data-chart-id="myAreaChart">
-                                        <i class="fas fa-print me-1"></i> Print
-                                    </button>
-                                    <div class="dropdown no-caret">
-                                        <button class="btn btn-transparent-dark btn-icon dropdown-toggle"
-                                            id="areaChartDropdownExample" type="button" data-bs-toggle="dropdown"
-                                            aria-haspopup="true" aria-expanded="false"><i class="text-brown"
-                                                data-feather="more-vertical"></i></button>
-                                        <div class="dropdown-menu dropdown-menu-end animated--fade-in-up"
-                                            aria-labelledby="areaChartDropdownExample">
-                                            <a class="dropdown-item filter-chart" href="#" data-range="12m">Last
-                                                12
-                                                Months</a>
-                                            <a class="dropdown-item filter-chart" href="#" data-range="30d">Last
-                                                30
-                                                Days</a>
-                                            <a class="dropdown-item filter-chart" href="#" data-range="7d">Last 7
-                                                Days</a>
-                                            <a class="dropdown-item filter-chart" href="#"
-                                                data-range="this_month">This Month</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item filter-chart" href="#"
-                                                data-range="custom">Custom
-                                                Range</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-area"><canvas id="myAreaChart" width="100%"
-                                        height="30"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<div class="d-flex row align-items-center text-align-center mt-4">
+    <div class="col-sm-4">
+        <p class="m-0 font-3 font-brown montserrat ps-3">Pickup Date</p>
+    </div>
+    <div class="col-sm-8">
+        <input type="text" class="input-pl-date montserrat shadow-cstm" id="orderDate"
+            placeholder="Loading available dates..." name="orderdate" disabled>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const orderDateInput = document.getElementById('orderDate');
+        let bookings = {};
+        const maxOrdersPerDay = 30;
 
-                    <!-- Sales by Product -->
-                    <div class="col-xl-6 mb-4">
-                        <div class="card card-header-actions h-100">
-                            <div class="card-header">
-                                Sales by Product
-                                <div class="d-flex align-items-center">
-                                    <button class="btn btn-sm btn-orange me-2 print-sales-btn" id="myBarCharts "
-                                        data-chart-id="myBarChart">
-                                        <i class="fas fa-print me-1"></i> Print
-                                    </button>
-                                    <div class="dropdown no-caret">
-                                        <button class="btn btn-transparent-dark btn-icon dropdown-toggle"
-                                            id="areaChartDropdownExample" type="button" data-bs-toggle="dropdown"
-                                            aria-haspopup="true" aria-expanded="false"><i class="text-brown"
-                                                data-feather="more-vertical"></i></button>
-                                        <div class="dropdown-menu dropdown-menu-end animated--fade-in-up"
-                                            aria-labelledby="areaChartDropdownExample">
-                                            <a class="dropdown-item" href="#!">Last 12 Months</a>
-                                            <a class="dropdown-item" href="#!">Last 30 Days</a>
-                                            <a class="dropdown-item" href="#!">Last 7 Days</a>
-                                            <a class="dropdown-item" href="#!">This Month</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#!">Custom Range</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-bar"><canvas id="salesByProductChart" width="100%"
-                                        height="30"></canvas></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Completed Orders -->
-                <div class="row">
-                    <div class="container-fluid mb-4">
-                        <div class="card card-header-actions h-100">
-                            <div class="card-header">
-                                Completed Orders
-                                <div class="dropdown no-caret">
-                                    <button id="printTableBtn" class="btn btn-sm btn-orange">
-                                        <i class="fas fa-print me-1"></i> Print
-                                    </button>
-                                    <button class="btn btn-transparent-dark btn-icon dropdown-toggle"
-                                        id="areaChartDropdownExample" type="button" data-bs-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="false"><i class="text-brown"
-                                            data-feather="more-vertical"></i></button>
-                                    <div class="dropdown-menu dropdown-menu-end animated--fade-in-up"
-                                        aria-labelledby="areaChartDropdownExample">
-                                        <a class="dropdown-item" href="javascript:void(0);" id="last12Months">Last 12
-                                            Months</a>
-                                        <a class="dropdown-item" href="javascript:void(0);" id="last30Days">Last 30
-                                            Days</a>
-                                        <a class="dropdown-item" href="javascript:void(0);" id="last7Days">Last 7
-                                            Days</a>
-                                        <a class="dropdown-item" href="javascript:void(0);" id="thisMonth">This
-                                            Month</a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="javascript:void(0);" id="customRange">Custom
-                                            Range</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <table id="datatablesSimple">
-                                    <thead>
-                                        <tr>
-                                            <th>Order ID</th>
-                                            <th>Name</th>
-                                            <th>Product Type</th>
-                                            <th>Order Status</th>
-                                            <th>Price</th>
-                                            <th>Pickup Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Table rows will be added here dynamically -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
+        async function fetchBookingData() {
+            try {
+                orderDateInput.placeholder = "Loading available dates...";
+                const response = await fetch('/api/booking-data');
+
+                if (!response.ok) throw new Error('Network response was not ok');
+
+                const data = await response.json();
+                bookings = data.orders || {};
+
+            } catch (error) {
+                console.error('Error fetching booking data:', error);
+                // Fallback - allow all dates if API fails
+                bookings = {};
+                orderDateInput.placeholder = "Select a date (availability not checked)";
+            } finally {
+                initDatePicker();
+                orderDateInput.disabled = false;
+            }
+        }
+
+        function initDatePicker() {
+            const availableDates = [];
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const currentDate = new Date(today);
+            const endDate = new Date();
+            endDate.setFullYear(today.getFullYear() + 1);
+
+            while (currentDate <= endDate) {
+                const dateStr = formatDate(currentDate);
+                const bookingsCount = bookings[dateStr] || 0;
+
+                if (bookingsCount < maxOrdersPerDay) {
+                    availableDates.push(dateStr);
+                }
+
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            const picker = flatpickr(orderDateInput, {
+                dateFormat: "Y-m-d",
+                minDate: "today",
+                enable: availableDates.length ? availableDates : undefined,
+                onChange: function(selectedDates, dateStr) {
+                    console.log("Selected date:", dateStr);
+                    // You could add additional validation here
+                },
+                disableMobile: true,
+                onReady: function() {
+                    if (availableDates.length === 0) {
+                        orderDateInput.placeholder = "No available dates found";
+                    }
+                }
+            });
+
+            // If API failed, enable all dates
+            if (Object.keys(bookings).length === 0) {
+                picker.set('enable', []);
+            }
+        }
+
+        function formatDate(date) {
+            return date.toISOString().split('T')[0]; // YYYY-MM-DD
+        }
+
+        fetchBookingData();
+    });
+</script>

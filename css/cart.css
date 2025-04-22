@@ -83,20 +83,19 @@ body {
 }
 
 input,
+select,
 textarea {
-    border: rgb(116, 116, 116) solid 0px !important;
-    background-color: #f2f2f2 !important;
+    border: rgb(54, 54, 54) solid 1px !important;
+    background-color: #FFFFFF !important;
     padding: 15px 20px !important;
-    box-shadow: inset 2px 2px 6px #cecece,
-        inset -2px -2px 6px #ffffff;
+    color: #000;
 }
 
 input:focus,
 textarea:focus {
     outline: none !important;
-    box-shadow: inset 2px 2px 6px #cecece,
-        inset -2px -2px 6px #ffffff !important;
-    border: #333 solid 0px !important;
+    border: rgb(54, 54, 54) solid 2px !important;
+    box-shadow: none !important;
     border-radius: 3px !important;
 }
 

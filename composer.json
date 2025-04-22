@@ -1,7 +1,5 @@
 {
     "require": {
-        "setasign/fpdf": "^1.8",
-        "phpmailer/phpmailer": "^6.9",
-        "twilio/sdk": "^8.3"
+        "phpmailer/phpmailer": "^6.9"
     }
 }

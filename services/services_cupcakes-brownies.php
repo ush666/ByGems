@@ -1,3 +1,13 @@
+<?php
+session_start();
+require_once '../includes/db.php';
+
+// Fetch services under "Cupcakes and Brownies" category with active status
+$sql = "SELECT * FROM services WHERE category IN ('Cupcakes', 'Brownies') AND status = 'enabled'";
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$servicess = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -76,87 +86,38 @@
         </div>
 
         <div class="card-container">
-
-            <!-- Card 1 -->
-            <div class="card">
-                <img src="../img/Image.png" alt="Party Package 1">
-                <div class="card-content">
-                    <div class="card-title">Cupcake with cut out topper</div>
-                    <div class="card-price"><span class="card-text">Retail Price</span> ₱ 45.00 <span class="card-text">each</span></div>
-                    <ul class="card-description ul">
-                        <li>Chocolate moist</li>
-                        <li>Frost with whip icing and topped with themed cut-outs</li>
-                        <li>Minimum order of 12pcs or by dozen</li>
-                    </ul>
-                    <button class="btn btn-success">Add to Cart</button>
-                </div>
-            </div>
-
-            <!-- Card 2 -->
-            <div class="card">
-                <img src="../img/Image.png" alt="Party Package 2">
-                <div class="card-content">
-                    <div class="card-title">Cupcake with Fondant topper</div>
-                    <div class="card-price"><span class="card-text">Retail Price</span> ₱ 75.00 <span class="card-text">each</span></div>
-                    <ul class="card-description ul">
-                        <li>Chocolate moist</li>
-                        <li>Frost with whip icing and topped with themed fondant topper</li>
-                        <li>Minimum order of 12pcs or by dozen</li>
-                    </ul>
-                    <div class="card-footer">
-                        <button class="btn btn-success">Add to Cart</button>
-                        <div class="arrows">
-                            <button class="btn arrow-btn">&lt;</button>
-                            <button class="btn arrow-btn">&gt;</button>
+            <?php if (empty($servicess)): ?>
+                <p class="text-muted">No Cupcakes and Brownies available right now.</p>
+            <?php else: ?>
+                <?php foreach ($servicess as $service) : ?>
+                    <!-- Card 1 -->
+                    <div class="card">
+                        <img src="../uploads/<?php echo htmlspecialchars($service['image']); ?>" alt="<?php echo htmlspecialchars($service['service_name']); ?>">
+                        <div class="card-content">
+                            <div class="card-title"><?php echo htmlspecialchars($service['service_name']); ?></div>
+                            <div class="card-price">
+                                ₱ <?php echo number_format($service['price'], 2); ?> <span class="card-text">/ PC</span>
+                                <?php if (!empty($service['price_unit'])) : ?>
+                                    <span class="card-text">/ <?php echo htmlspecialchars($service['price_unit']); ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <p class="card-description">
+                                <?php echo htmlspecialchars($service['description']); ?>
+                            </p>
+                            <button class="btn-cart add-to-cart"
+                                data-service-id="<?php echo $service['service_id']; ?>"
+                                data-price="<?php echo $service['price']; ?>">
+                                Add to Cart
+                            </button>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="card">
-                <img src="../img/Image.png" alt="Party Package 3">
-                <div class="card-content">
-                    <div class="card-title">Ube Cake Bars</div>
-                    <div class="card-price"><span class="card-text">Retail Price</span> ₱ 195.00</span></div>
-                    <ul class="card-description ul">
-                        <li>6 Pieces in a tub</li>
-                    </ul>
-                    <button class="btn btn-success">Add to Cart</button>
-                </div>
-            </div>
-
-            <!-- Card 4 -->
-            <div class="card">
-                <img src="../img/Image.png" alt="Party Package 4">
-                <div class="card-content">
-                    <div class="card-title">Revel Bars</div>
-                    <div class="card-price"><span class="card-text">Retail Price</span> ₱ 245.00</div>
-                    <ul class="card-description ul">
-                        <li>6 Pieces in a tub</li>
-                    </ul>
-                    <button class="btn btn-success">Add to Cart</button>
-                </div>
-            </div>
-            <!-- Card 5 -->
-            <div class="card">
-                <img src="../img/Image.png" alt="Party Package 4">
-                <div class="card-content">
-                    <div class="card-title">Assorted Choco Bars</div>
-                    <div class="card-price"><span class="card-text">Retail Price</span> ₱ 210.00</div>
-                    <ul class="card-description ul">
-                        <li>6 Pieces in a tub</li>
-                    </ul>
-                    <button class="btn btn-success">Add to Cart</button>
-                </div>
-            </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
-
     </div>
-    <?php
-    include("../components/footer.php");
-    ?>
-    <script src="../bootstrap-5.3.2-dist\js\bootstrap.bundle.min.js"></script>
+    <?php include("../components/footer.php"); ?>
+
+    <script src="../js/ajax.js"></script>
 </body>
 
 </html>

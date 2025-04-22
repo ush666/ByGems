@@ -1,3 +1,13 @@
+<?php
+session_start();
+require_once '../includes/db.php';
+
+// Fetch services under "Party Accessories" category with active status
+$sql = "SELECT * FROM services WHERE category = 'Party Accessories' AND status = 'enabled'";
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$servicess = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,6 +19,22 @@
     <link rel="stylesheet" href="../css/service.css">
     <link rel="stylesheet" href="../css/home.css">
 </head>
+<style>
+    /* Add to your CSS file */
+    .btn-cart {
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .btn-cart .spinner-border {
+        vertical-align: middle;
+        margin-right: 5px;
+    }
+
+    .btn-cart:disabled {
+        opacity: 0.7;
+    }
+</style>
 
 <body>
     <?php
@@ -38,135 +64,41 @@
 
         <!-- Party Accessories Grid -->
         <div class="card-container">
-
-            <!-- Card 1 -->
-            <div class="card">
-                <img src="../img/party-accessories-1.png" alt="FWR (Plain)">
-                <div class="card-content">
-                    <div class="card-title">FWR (Plain)</div>
-                    <div class="card-price">₱ 20 <span class="card-text">/ PC</span></div>
-                    <p class="card-description">With stick and ribbons</p>
-                    <a href="#" class="btn-cart">Add to Cart</a>
-                </div>
-            </div>
-
-            <!-- Card 2 -->
-            <div class="card">
-                <img src="../img/party-accessories-2.png" alt="FWR (Printed)">
-                <div class="card-content">
-                    <div class="card-title">FWR (Printed)</div>
-                    <div class="card-price">₱ 25 <span class="card-text">/ PC</span></div>
-                    <p class="card-description">With stick and ribbons</p>
-                    <a href="#" class="btn-cart">Add to Cart</a>
-                </div>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="card">
-                <img src="../img/party-accessories-3.png" alt="Loot Box (w/out Content)">
-                <div class="card-content">
-                    <div class="card-title">Loot Box (w/out Content)</div>
-                    <div class="card-price">₱ 60 <span class="card-text">/ PC</span></div>
-                    <p class="card-description">Minimum order of 20 pcs, themed layout</p>
-                    <a href="#" class="btn-cart">Add to Cart</a>
-                </div>
-            </div>
-
-            <!-- Card 4 -->
-            <div class="card">
-                <img src="../img/party-accessories-4.png" alt="Loot Box (with Content)">
-                <div class="card-content">
-                    <div class="card-title">Loot Box (with Content)</div>
-                    <div class="card-price">₱ 95 <span class="card-text">/ PC</span></div>
-                    <p class="card-description">Minimum order of 20 pcs, themed layout with 8 activity items</p>
-                    <a href="#" class="btn-cart">Add to Cart</a>
-                </div>
-            </div>
-
-            <!-- Card 5 -->
-            <div class="card">
-                <img src="../img/party-accessories-5.png" alt="Fun Box Piñata (w/out Content)">
-                <div class="card-content">
-                    <div class="card-title">Fun Box Piñata (w/out Content)</div>
-                    <div class="card-price">₱ 400 <span class="card-text">/ PC</span></div>
-                    <p class="card-description">Themed FunBox cover</p>
-                    <a href="#" class="btn-cart">Add to Cart</a>
-                </div>
-            </div>
-
-            <!-- Card 6 -->
-            <div class="card">
-                <img src="../img/party-accessories-6.png" alt="Fun Box Piñata (with Content)">
-                <div class="card-content">
-                    <div class="card-title">Fun Box Piñata (with Content)</div>
-                    <div class="card-price">₱ 580 <span class="card-text">/ PC</span></div>
-                    <p class="card-description">Themed FunBox cover, assorted candies and chocos</p>
-                    <a href="#" class="btn-cart">Add to Cart</a>
-                </div>
-            </div>
-
-            <!-- Card 7 -->
-            <div class="card">
-                <img src="../img/party-accessories-7.png" alt="Themed Party Hats">
-                <div class="card-content">
-                    <div class="card-title">Themed Party Hats</div>
-                    <div class="card-price">₱ 20 <span class="card-text">/ PC</span></div>
-                    <p class="card-description">Minimum order of 20 pcs, themed layout</p>
-                    <a href="#" class="btn-cart">Add to Cart</a>
-                </div>
-            </div>
-
-            <!-- Card 8 -->
-            <div class="card">
-                <img src="../img/party-accessories-8.png" alt="Party Popper">
-                <div class="card-content">
-                    <div class="card-title">Party Popper</div>
-                    <div class="card-price">₱ 250 <span class="card-text">/ PC</span></div>
-                    <p class="card-description">60 cm, confetti twist popper</p>
-                    <a href="#" class="btn-cart">Add to Cart</a>
-                </div>
-            </div>
-
-            <!-- Card 9 -->
-            <div class="card">
-                <img src="../img/party-accessories-9.png" alt="Game Prizes">
-                <div class="card-content">
-                    <div class="card-title">Game Prizes</div>
-                    <div class="card-price">₱ 75 <span class="card-text">/ PC</span></div>
-                    <p class="card-description">Minimum order of 20 pcs, Kiddie Toys</p>
-                    <a href="#" class="btn-cart">Add to Cart</a>
-                </div>
-            </div>
-
-            <!-- Card 10 -->
-            <div class="card">
-                <img src="../img/party-accessories-10.png" alt="Personalized Invitation (print-out)">
-                <div class="card-content">
-                    <div class="card-title">Personalized Invitation (print-out)</div>
-                    <div class="card-price">₱ 35 <span class="card-text">/ PC</span></div>
-                    <p class="card-description">Minimum order of 20 pcs, with white envelope, Free Layout; 4R or
-                        4×6 inches</p>
-                    <a href="#" class="btn-cart">Add to Cart</a>
-                </div>
-            </div>
-
-            <!-- Card 11 -->
-            <div class="card">
-                <img src="../img/party-accessories-11.png" alt="Personalized Invitation (Layout Only)">
-                <div class="card-content">
-                    <div class="card-title">Personalized Invitation (Layout Only)</div>
-                    <div class="card-price">₱ 500 <span class="card-text">/ Layout</span></div>
-                    <p class="card-description">Soft copy file, ByGems artist layout, 3 maximum revisions</p>
-                    <a href="#" class="btn-cart">Add to Cart</a>
-                </div>
-            </div>
-
+            <?php if (empty($services)): ?>
+                <p class="text-muted">No Party Accessories available right now.</p>
+            <?php else: ?>
+                <?php foreach ($servicess as $service) : ?>
+                    <!-- Card -->
+                    <div class="card" data-service-id="<?php echo $service['service_id']; ?>">
+                        <img src="../uploads/<?php echo htmlspecialchars($service['image']); ?>"
+                            alt="<?php echo htmlspecialchars($service['service_name']); ?>">
+                        <div class="card-content">
+                            <div class="card-title"><?php echo htmlspecialchars($service['service_name']); ?></div>
+                            <div class="card-price">
+                                ₱ <?php echo number_format($service['price'], 2); ?> <span class="card-text">/ PC</span>
+                                <?php if (!empty($service['price_unit'])) : ?>
+                                    <span class="card-text">/ <?php echo htmlspecialchars($service['price_unit']); ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <p class="card-description">
+                                <?php echo htmlspecialchars($service['description']); ?>
+                            </p>
+                            <button class="btn-cart add-to-cart"
+                                data-service-id="<?php echo $service['service_id']; ?>"
+                                data-price="<?php echo $service['price']; ?>">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </div>
     <?php
     include("../components/footer.php");
     ?>
-    <script src="../bootstrap-5.3.2-dist\js\bootstrap.bundle.min.js"></script>
+
+    <script src="../js/ajax.js"></script>
 </body>
 
 </html>

@@ -1,6 +1,10 @@
 <?php
 session_start();
 require '../includes/db.php';
+require '../vendor/autoload.php'; // Needed for PHPMailer
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 $error_message = '';
 $success_message = '';
@@ -13,32 +17,60 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = $_POST['password'];
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    // Insert new user into the database
-    $stmt = $pdo->prepare("INSERT INTO account (name, username, email, phone, password, role) VALUES (?, ?, ?, ?, ?, 'customer')");
+    // Generate 6-digit OTP
+    $otp = str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
+    $otp_expiry = date('Y-m-d H:i:s', strtotime('+15 minutes')); // OTP valid for 15 minutes
+
+    // Insert new user into the database with OTP
+    $stmt = $pdo->prepare("INSERT INTO account (name, username, email, phone, password, role, otp, otp_expiry, email_verified) VALUES (?, ?, ?, ?, ?, 'customer', ?, ?, 0)");
 
     try {
-        $stmt->execute([$name, $username, $email, $phone, $hashed_password]);
+        $stmt->execute([$name, $username, $email, $phone, $hashed_password, $otp, $otp_expiry]);
 
-        // Automatically log the user in
-        $loginStmt = $pdo->prepare("SELECT user_id, password FROM account WHERE username = ? AND role = 'customer'");
-        $loginStmt->execute([$username]);
-        $user = $loginStmt->fetch(PDO::FETCH_ASSOC);
+        // Store OTP in session for verification page
+        $_SESSION['otp_email'] = $email;
+        $_SESSION['otp_attempts'] = 0; // Track OTP attempts
 
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['user_id'];
-            $_SESSION['role'] = 'customer';
+        // Send verification email with OTP
+        $mail = new PHPMailer();
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'bygems001@gmail.com';
+        $mail->Password = 'ftwq hjbh bbet tkrx'; 
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
+
+        $mail->setFrom('no-reply@bygems.com', 'ByGems');
+        $mail->addAddress($email);
+
+        $mail->isHTML(true);
+        $mail->Subject = 'Email Verification OTP';
+        $mail->Body = "
+            <h2>ByGems Account Verification</h2>
+            <p>Thank you for registering, $name!</p>
+            <p>Your verification code is: <strong>$otp</strong></p>
+            <p>This code will expire in 15 minutes.</p>
+            <p>Enter this code on the verification page to complete your registration.</p>
+            <p>If you didn't request this, please ignore this email.</p>
+        ";
+
+        if ($mail->send()) {
+            $success_message = 'Registration successful! Please check your email for the verification OTP.';
             
-            // Redirect to welcome page
-            header("Location: welcome.php");
+            // Redirect to OTP verification page
+            header("Location: ../login/otp-veification.php");
             exit();
         } else {
-            $error_message = "Failed to log in after registration.";
+            $error_message = 'Error sending verification email. Please try again.';
         }
+
     } catch (PDOException $e) {
         $error_message = "Error: " . $e->getMessage();
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -99,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </form>
 
             <div class="login-link">
-                Already have an account? <a href="customer_login.php">Login</a>
+                Already have an account? <a href="../login/customer_login.php">Login</a>
             </div>
         </div>
     </body>

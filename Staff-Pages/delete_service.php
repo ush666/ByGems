@@ -1,32 +1,23 @@
 <?php
+session_start();
 require_once '../includes/db.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['service_id'])) {
-    $service_id = intval($_POST['service_id']);
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] == 'customer') {
+    header("Location: ../User-Pages/home.php");
+    exit();
+}
 
-    // Fetch service image path
-    $stmt = $pdo->prepare("SELECT image FROM services WHERE service_id = ?");
-    $stmt->execute([$service_id]);
-    $service = $stmt->fetch(PDO::FETCH_ASSOC);
+if (isset($_GET['id'])) {
+    $service_id = intval($_GET['id']);
 
-    if (!$service) {
-        echo json_encode(["status" => "error", "message" => "Service not found."]);
-        exit();
-    }
-
-    // Delete the service image if exists
-    if (!empty($service['image']) && file_exists("../uploads/" . $service['image'])) {
-        unlink("../uploads/" . $service['image']);
-    }
-
-    // Delete service from the database
+    // Delete the service
     $stmt = $pdo->prepare("DELETE FROM services WHERE service_id = ?");
-    if ($stmt->execute([$service_id])) {
-        echo json_encode(["status" => "success", "message" => "Service deleted successfully!"]);
-    } else {
-        echo json_encode(["status" => "error", "message" => "Failed to delete service."]);
-    }
+    $stmt->execute([$service_id]);
+
+    header("Location: packages&services.php?success=" . urlencode("Service deleted successfully"));
+    exit();
 } else {
-    echo json_encode(["status" => "error", "message" => "Invalid request."]);
+    header("Location: packages&services.php?success=" . urlencode("Invalid request"));
+    exit();
 }
 ?>

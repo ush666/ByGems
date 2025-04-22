@@ -153,7 +153,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <td><?php echo htmlspecialchars($user['phone'] ?? 'N/A'); ?></td>
                                     <td>
                                         <a href="view_user.php?id=<?php echo $user['user_id']; ?>" class="btn btn-sm btn-warning text-white">View More</a>
-                                        <a href="view_user.php?id=<?php echo $user['user_id']; ?>" class="btn btn-sm btn-warning text-white">View More</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

@@ -1,4 +1,4 @@
-<div class="d-flex flex-column p-3 bg-white shadow position-fixed h-100 z-3 top-0 rounded-0" style="width: 280px; max-height: 100vh; border-radius: 0 30px 30px 0; overflow-y: auto;">
+<div class="d-flex flex-column p-3 bg-white shadow position-fixed h-100 z-3 top-0 rounded-0 admin-sidebar" style="width: 280px; max-height: 100vh; border-radius: 0 30px 30px 0; overflow-y: auto;">
     <!--<div class="text-center mt-5 pt-3" style="display: flex; flex-direction: column; align-items: center;">
         <img src="../img/default.png" class="rounded-circle mb-2" alt="Profile" style="width: 60px; height: 60px; object-fit: cover;">
         <h6 class="mb-0">
@@ -24,9 +24,12 @@
             <li><a href="#" class="nav-link text-dark">Edit Packages</a></li>
             <li><a href="#" class="nav-link text-dark">Event Queries</a></li>
             <li><a href="#" class="nav-link text-dark">Site Style Manager</a></li>
-        -->
+            -->
+        <hr>
+        <li><a href="../Staff-Pages/packages&services.php" class="nav-link text-dark <?= $packageServices ?>">Packages & Services</a></li>
+        <!--<li><a href="../Staff-Pages/orders.php" class="nav-link text-dark <?= $request ?>">Request Management</a></li>-->
+
     </ul><!--
-    <hr>
     <ul class="nav flex-column">
         <li><a href="#" class="nav-link text-dark">Notifications</a></li>
         <li><a href="#" class="nav-link text-dark">Settings</a></li>

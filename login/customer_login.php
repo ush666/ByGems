@@ -19,10 +19,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             header("Location: ../Staff-Pages/cms_dashboard.php");
         } elseif ($user['role'] === 'customer') {
             header("Location: ../User-Pages/home.php");
-        } else {
-            // Optional: handle unknown roles
-            header("Location: error.php");
-        }
+        }// else {
+         //   header("Location: error.php");
+        //}
         exit();
     } else {
         $error_message = "Invalid username or password.";
@@ -75,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </form>
 
             <div class="login-link">
-                Don't have an account yet? <a href="customer_register.php">Sign Up</a>
+                Don't have an account yet? <a href="../User-Pages/customer_register.php">Sign Up</a>
             </div>
         </div>
     </body>
