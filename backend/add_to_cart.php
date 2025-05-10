@@ -14,11 +14,10 @@ if (!isset($_SESSION['user_id'])) {
 // Get POST data
 $data = json_decode(file_get_contents('php://input'), true);
 $serviceId = $data['service_id'] ?? null;
-$price = $data['price'] ?? null;
 $quantity = $data['quantity'] ?? 1;
 
 // Validate input
-if (!$serviceId || !$price) {
+if (!$serviceId || $quantity <= 0) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'Invalid item data']);
     exit();
@@ -38,8 +37,8 @@ try {
         $cartId = $cart['id'];
     }
 
-    // Get the service's category
-    $stmt = $pdo->prepare("SELECT category FROM services WHERE service_id = ?");
+    // Get service details
+    $stmt = $pdo->prepare("SELECT service_id, category, price FROM services WHERE service_id = ?");
     $stmt->execute([$serviceId]);
     $service = $stmt->fetch();
 
@@ -50,9 +49,44 @@ try {
     }
 
     $category = $service['category'];
+    $basePrice = $service['price'];
     $categoriesToUpdateQuantity = ['Cakes', 'Tier Cakes', 'Dessert Packages', 'Cupcakes', 'Brownies'];
 
-    // Check if item already exists in cart (active or inactive)
+    // Fetch active discounts
+    $discountQuery = "SELECT * FROM discounts 
+                      WHERE is_active = 1 
+                      AND start_date <= NOW() 
+                      AND end_date >= NOW()";
+    $discountStmt = $pdo->prepare($discountQuery);
+    $discountStmt->execute();
+    $activeDiscounts = $discountStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Apply discounts
+    $totalDiscount = 0;
+    foreach ($activeDiscounts as $discount) {
+        $applies = false;
+
+        if ($discount['discount_application'] === 'all') {
+            $applies = true;
+        } elseif ($discount['discount_application'] === 'specific') {
+            $ids = array_map('trim', explode(',', $discount['specific_service_ids']));
+            if (in_array($serviceId, $ids)) {
+                $applies = true;
+            }
+        }
+
+        if ($applies) {
+            if ($discount['discount_type'] === 'percentage') {
+                $totalDiscount += $basePrice * ($discount['discount_value'] / 100);
+            } else {
+                $totalDiscount += $discount['discount_value'];
+            }
+        }
+    }
+
+    $finalPrice = max(0, $basePrice - $totalDiscount);
+
+    // Check if item already exists in cart
     $stmt = $pdo->prepare("SELECT cart_item_id, quantity, status FROM cart_items WHERE cart_id = ? AND service_id = ?");
     $stmt->execute([$cartId, $serviceId]);
     $existingItem = $stmt->fetch();
@@ -60,29 +94,25 @@ try {
 
     if ($existingItem) {
         if ($existingItem['status'] === 'inactive' || $existingItem['status'] === '') {
-            // If item exists but is inactive, reactivate it
             $newQuantity = in_array($category, $categoriesToUpdateQuantity)
                 ? $existingItem['quantity'] + $quantity
-                : $existingItem['quantity']; // If not in specific categories, keep quantity same
+                : $existingItem['quantity'];
 
             $stmt = $pdo->prepare("UPDATE cart_items SET quantity = ?, price = ?, status = ? WHERE cart_item_id = ?");
-            $stmt->execute([$newQuantity, $price, $status, $existingItem['cart_item_id']]);
+            $stmt->execute([$newQuantity, $finalPrice, $status, $existingItem['cart_item_id']]);
         } else {
             if (in_array($category, $categoriesToUpdateQuantity)) {
-                // If category matches, update quantity
                 $newQuantity = $existingItem['quantity'] + $quantity;
                 $stmt = $pdo->prepare("UPDATE cart_items SET quantity = ?, price = ? WHERE cart_item_id = ?");
-                $stmt->execute([$newQuantity, $price, $existingItem['cart_item_id']]);
+                $stmt->execute([$newQuantity, $finalPrice, $existingItem['cart_item_id']]);
             } else {
-                // If service already exists but category is not in the list, do nothing
                 echo json_encode(['success' => true, 'message' => 'Item already exists in cart']);
                 exit();
             }
         }
     } else {
-        // If service does not exist yet, insert it
         $stmt = $pdo->prepare("INSERT INTO cart_items (cart_id, service_id, quantity, price) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$cartId, $serviceId, $quantity, $price]);
+        $stmt->execute([$cartId, $serviceId, $quantity, $finalPrice]);
     }
 
     echo json_encode(['success' => true, 'message' => 'Item added to cart']);

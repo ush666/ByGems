@@ -135,12 +135,12 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
         }
 
         .status-fullypaid {
-            background-color:rgba(25, 135, 84, 0.77);
+            background-color: rgba(25, 135, 84, 0.77);
             color: #fff;
         }
 
         .status-partial {
-            background-color:rgba(255, 193, 7, 0.79);
+            background-color: rgba(255, 193, 7, 0.79);
             color: #fff;
         }
 
@@ -260,6 +260,8 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
             <div>
                 <h1 class="invoice-title">Invoice</h1>
                 <p>Order #<?= $order['order_id'] ?></p>
+                <p>Request Status: <strong><?= $order['request_status'] ?></p></strong>
+
             </div>
             <div class="invoice-info">
                 <p><strong>Date:</strong> <?= $orderDate ?></p>
@@ -275,7 +277,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
         <div class="company-info">
             <h2 class="company-name">BYGEMS Party Kingdom</h2>
             <p>2F JBS Bldg, Mayor Jaldon Street, Canelar, <br> Zamboanga City, Zamboanga del Sur, Philippines</p>
-            <p>Phone: (123) 456-7890 | Email: bygems@gmail.com</p>
+            <p>Phone: 0917-857-4514 | Email: bygemspartykingdom@gmail.com</p>
         </div>
 
         <div class="section">
@@ -329,26 +331,42 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                     <td>₱<?= number_format($subtotal, 2) ?></td>
                 </tr>
                 <?php if ($discountAmount > 0): ?>
-                    <tr>
-                        <td>Discount (<?= $order['discount_percentage'] ?>%):</td>
+                    <tr class="discount-row">
+                        <td>
+                            Discount <?= $order['discount_percentage'] ? "({$order['discount_percentage']}%)" : '' ?>:
+                        </td>
                         <td>-₱<?= number_format($discountAmount, 2) ?></td>
                     </tr>
                 <?php endif; ?>
-                <tr>
-                    <td>Deposit Paid:</td>
-                    <td>₱<?= number_format($depositAmount, 2) ?></td>
-                </tr>
-                <tr class="highlight">
-                    <td>Remaining Balance:</td>
-                    <td>₱<?= number_format($remainingBalance, 2) ?></td>
-                </tr>
+
+                <?php if ($order['payment_status'] === 'partial'): ?>
+                    <tr>
+                        <td>Deposit Paid:</td>
+                        <td>₱<?= number_format($depositAmount, 2) ?></td>
+                    </tr>
+                    <tr class="highlight">
+                        <td>Remaining Balance:</td>
+                        <td>₱<?= number_format($remainingBalance, 2) ?></td>
+                    </tr>
+                <?php elseif ($order['payment_status'] === 'fullypaid'): ?>
+                    <tr class="highlight">
+                        <td>Amount Paid:</td>
+                        <td>₱<?= number_format($grandTotal, 2) ?></td>
+                    </tr>
+                <?php endif; ?>
+
                 <tr>
                     <td><strong>Grand Total:</strong></td>
                     <td><strong>₱<?= number_format($grandTotal, 2) ?></strong></td>
                 </tr>
             </table>
-        </div>
 
+            <?php if ($order['payment_status'] === 'fullypaid'): ?>
+                <div class="alert alert-success mt-3">
+                    <i class="fas fa-check-circle"></i> Payment completed on <?= date('F j, Y', strtotime($order['order_date'])) ?>
+                </div>
+            <?php endif; ?>
+        </div>
         <div class="section">
             <h3 class="section-title">Payment Information</h3>
             <p><strong>Payment Method:</strong> <?= ucfirst($order['payment_method']) ?></p>
@@ -362,7 +380,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
                     <h4 style="margin-top: 0;">Payment Instructions</h4>
                     <p>Please pay the remaining balance of <strong>₱<?= number_format($remainingBalance, 2) ?></strong> before the event date.</p>
                     <p>Payment methods: GCash, Bank Transfer, or Cash</p>
-                    <p>For GCash payments, send to: 0912-345-6789 (Your Company Name)</p>
+                    <p>For GCash payments, send to: 0917-857-4514 (ByGems)</p>
                 </div>
             <?php endif; ?>
         </div>

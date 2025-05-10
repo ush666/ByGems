@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ByGems | Home</title>
     <link href="../bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="https://bygems.shop/img/logo.png">
     <link rel="stylesheet" href="../css/home.css">
 
     <!-- FullCalendar & jQuery -->
@@ -23,7 +24,9 @@
     ?>
 
     <!-- Hero Carousel -->
-    <section id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000" data-bs-pause="hover">
+    <section id="heroCar.
+    
+    3ousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000" data-bs-pause="hover">
         <div class="carousel-inner">
             <div class="carousel-item active">
                 <img src="../img/landing-page.png" class="d-block w-100" alt="Party Image 1">
@@ -69,7 +72,7 @@
                         </div>
                     </div>
 
-                    <button class="cta-btn text-white">Let’s Get Started!</button>
+                    <a href="../services/prop-up_packages.php" class="cta-btn text-white w-100 ms-auto">Let’s Get Started!</a>
                 </div>
 
                 <!-- Image Content -->
@@ -435,7 +438,7 @@
                     foreach ($bookedEvents as $event):
                         $counter++;
                     ?> {
-                            title: "<?= htmlspecialchars($event['celebrant_name']); ?>",
+                            title: "",
                             start: "<?= $event['event_date']; ?>",
                             backgroundColor: "#1cff1c",
                             borderColor: "#1cff1c",

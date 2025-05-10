@@ -25,6 +25,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <link rel="stylesheet" href="../css/admin.css">
     <style>
         body {
@@ -138,7 +140,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <th>Email</th>
                                 <th>Last Login</th>
                                 <th>Phone number</th>
-                                <th>Actions</th>
+                                <th class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -151,8 +153,14 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <?php echo $user['last_login'] ? date('d/M/Y h:i A', strtotime($user['last_login'])) : 'Never'; ?>
                                     </td>
                                     <td><?php echo htmlspecialchars($user['phone'] ?? 'N/A'); ?></td>
-                                    <td>
-                                        <a href="view_user.php?id=<?php echo $user['user_id']; ?>" class="btn btn-sm btn-warning text-white">View More</a>
+                                    <td class="text-center">
+                                        <a class="text-purple view-user-btn font-1"
+                                            data-user-id="<?php echo $user['user_id']; ?>">
+                                            <ion-icon name="list-circle" class="admin-btn"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="left"
+                                                title="Edit"></ion-icon>
+                                        </a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -162,7 +170,81 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </div>
-
+    <!-- View User Modal -->
+    <div class="modal fade" id="viewUserModal" tabindex="-1" aria-labelledby="viewUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-white">
+                    <h5 class="modal-title" id="viewUserModalLabel">User Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="fw-bold">User ID:</label>
+                                <p id="viewUserId" class="text-muted"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="fw-bold">Name:</label>
+                                <p id="viewName" class="text-muted"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="fw-bold">Username:</label>
+                                <p id="viewUsername" class="text-muted"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="fw-bold">Email:</label>
+                                <p id="viewEmail" class="text-muted"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="fw-bold">Phone:</label>
+                                <p id="viewPhone" class="text-muted"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="fw-bold">Address:</label>
+                                <p id="viewAddress" class="text-muted"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="fw-bold">Gender:</label>
+                                <p id="viewGender" class="text-muted"></p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="fw-bold">Role:</label>
+                                <p id="viewRole" class="text-muted"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="fw-bold">Last Login:</label>
+                                <p id="viewLastLogin" class="text-muted"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="fw-bold">Email Verified:</label>
+                                <p id="viewEmailVerified" class="text-muted"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="fw-bold">Account Created:</label>
+                                <p id="viewCreatedAt" class="text-muted"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="fw-bold">Last Updated:</label>
+                                <p id="viewUpdatedAt" class="text-muted"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label class="fw-bold">Profile Picture:</label>
+                                <img id="viewProfilePicture" src="" class="img-thumbnail mt-2" style="max-width: 150px; display: none;">
+                                <p id="noProfilePicture" class="text-muted">No profile picture</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- JavaScript Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- jQuery (required for DataTables) -->
@@ -171,8 +253,10 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
+
     <script>
         $(document).ready(function() {
+            // Initialize DataTable
             $('#usersTable').DataTable({
                 responsive: true,
                 lengthMenu: [
@@ -199,6 +283,63 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         previous: "Previous"
                     }
                 }
+            });
+
+            // Handle View More button click
+            $(document).on('click', '.view-user-btn', function() {
+                const userId = $(this).data('user-id');
+
+                // Show loading state
+                $('#viewUserModalLabel').text('Loading...');
+
+                // Fetch user details via AJAX
+                $.ajax({
+                    url: '../backend/get_user_details.php',
+                    method: 'POST',
+                    data: {
+                        user_id: userId
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            const user = response.data;
+
+                            // Populate modal with user data
+                            $('#viewUserModalLabel').text('User Details - ' + user.username);
+                            $('#viewUserId').text(user.user_id);
+                            $('#viewName').text(user.name || 'N/A');
+                            $('#viewUsername').text(user.username);
+                            $('#viewEmail').text(user.email);
+                            $('#viewPhone').text(user.phone || 'N/A');
+                            $('#viewAddress').text(user.address || 'N/A');
+                            $('#viewGender').text(user.gender || 'N/A');
+                            $('#viewRole').text(user.role);
+                            $('#viewLastLogin').text(user.last_login ?
+                                new Date(user.last_login).toLocaleString() : 'Never');
+                            $('#viewEmailVerified').text(user.email_verified ? 'Yes' : 'No');
+                            $('#viewCreatedAt').text(new Date(user.created_at).toLocaleString());
+                            $('#viewUpdatedAt').text(user.updated_at ?
+                                new Date(user.updated_at).toLocaleString() : 'Never');
+
+                            // Handle profile picture
+                            if (user.profile_picture) {
+                                $('#viewProfilePicture').attr('src', '../' + user.profile_picture).show();
+                                $('#noProfilePicture').hide();
+                            } else {
+                                $('#viewProfilePicture').hide();
+                                $('#noProfilePicture').show();
+                            }
+
+                            // Show modal
+                            $('#viewUserModal').modal('show');
+                        } else {
+                            alert('Error: ' + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error fetching user details: ' + error);
+                    }
+                });
             });
         });
     </script>

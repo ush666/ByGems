@@ -27,6 +27,7 @@
             -->
         <hr>
         <li><a href="../Staff-Pages/packages&services.php" class="nav-link text-dark <?= $packageServices ?>">Packages & Services</a></li>
+        <li><a href="../Staff-Pages/discounts.php" class="nav-link text-dark <?= $discount ?>">Discount</a></li>
         <!--<li><a href="../Staff-Pages/orders.php" class="nav-link text-dark <?= $request ?>">Request Management</a></li>-->
 
     </ul><!--

@@ -19,7 +19,6 @@ if (!isset($_POST['selected_services'], $_POST['event_details'], $_POST['payment
 try {
     $pdo->beginTransaction();
 
-    // Decode input data
     $selectedServices = json_decode($_POST['selected_services'], true);
     $eventDetails = json_decode($_POST['event_details'], true);
 
@@ -27,17 +26,30 @@ try {
         throw new Exception('Invalid service or event data');
     }
 
-    // Calculate total amount
-    $totalAmount = 0;
+    // Calculate total amount and discounted total
+    $originalTotal = 0;
+    $discountedTotal = 0;
+    $totalDiscount = 0;
+
     foreach ($selectedServices as $service) {
-        if (!isset($service['cart_price']) || !is_numeric($service['cart_price'])) {
-            throw new Exception('Invalid service price data');
+        if (
+            !isset($service['service_price'], $service['cart_price']) ||
+            !is_numeric($service['service_price']) || !is_numeric($service['cart_price'])
+        ) {
+            throw new Exception('Invalid price format in service data');
         }
-        $totalAmount += floatval($service['cart_price']);
+
+        $originalTotal += floatval($service['service_price']);
+        $discountedTotal += floatval($service['cart_price']);
+
+        if (isset($service['discount_applied'])) {
+            $totalDiscount += floatval($service['discount_applied']);
+        }
     }
 
-    $depositAmount = $totalAmount * 0.5;
-    $remainingBalance = $totalAmount - $depositAmount;
+    $discountPercentage = $originalTotal > 0 ? round(($totalDiscount / $originalTotal) * 100, 2) : 0;
+    $depositAmount = $discountedTotal * 0.5;
+    $remainingBalance = $discountedTotal - $depositAmount;
 
     $paymentMethod = $_POST['payment_method'] ?? 'gcash';
     $paymentType = $_POST['payment_type'] ?? 'partial';
@@ -52,32 +64,31 @@ try {
 
         $fileExt = pathinfo($_FILES['payment_proof']['name'], PATHINFO_EXTENSION);
         $fileName = 'payment_' . time() . '_' . bin2hex(random_bytes(8)) . '.' . $fileExt;
-        $paymentProof = $uploadDir . $fileName; 
+        $paymentProof = $uploadDir . $fileName;
 
         if (!move_uploaded_file($_FILES['payment_proof']['tmp_name'], $paymentProof)) {
             throw new Exception('Failed to upload payment proof');
         }
     }
 
-    // Insert into orders table (no manual order_id)
+    // Insert into orders table
     $orderStmt = $pdo->prepare("
         INSERT INTO orders (user_id, total_amount, payment_status)
         VALUES (:user_id, :total_amount, :payment_status)
     ");
     $orderStmt->execute([
         ':user_id' => $_SESSION['user_id'],
-        ':total_amount' => $totalAmount,
+        ':total_amount' => $discountedTotal,
         ':payment_status' => $paymentType
     ]);
 
-    //  Get auto-incremented order_id
     $orderId = $pdo->lastInsertId();
 
     if (!$orderId) {
         throw new Exception('Failed to generate order ID');
     }
 
-    //  Prepare celebrant name and address
+    // Prepare event & client info
     $celebrantName = $eventDetails['firstName'] . ' ' .
                      (!empty($eventDetails['middleName']) ? $eventDetails['middleName'] . ' ' : '') .
                      $eventDetails['lastName'];
@@ -144,9 +155,9 @@ try {
         ':event_date' => $eventDetails['eventDate'],
         ':payment_status' => $paymentType,
         ':request_status' => 'pending',
-        ':discounted_price' => $totalAmount,
-        ':discount_percentage' => 0,
-        ':total_amount' => $totalAmount,
+        ':discounted_price' => $discountedTotal,
+        ':discount_percentage' => $discountPercentage,
+        ':total_amount' => $originalTotal,
         ':deposit_amount' => $depositAmount,
         ':remaining_balance' => $remainingBalance,
         ':payment_method' => $paymentMethod,
@@ -160,7 +171,7 @@ try {
         ':celebrant_gender' => $eventDetails['gender']
     ]);
 
-    //  Insert into order_items table
+    // Insert into order_items
     $orderItemStmt = $pdo->prepare("
         INSERT INTO order_items (
             order_id,
@@ -180,21 +191,17 @@ try {
     ");
 
     foreach ($selectedServices as $service) {
-        if (!isset($service['service_id'], $service['service_name'], $service['quantity'], $service['service_price'], $service['cart_price'])) {
-            throw new Exception('Invalid service data structure');
-        }
-
         $orderItemStmt->execute([
             ':order_id' => $orderId,
             ':service_id' => $service['service_id'],
             ':service_name' => $service['service_name'],
             ':quantity' => $service['quantity'],
-            ':price' => $service['service_price'],
-            ':total_price' => $service['cart_price']
+            ':price' => $service['service_price'], // Original
+            ':total_price' => $service['cart_price'] // Discounted
         ]);
     }
 
-    //  Update cart items
+    // Update cart items
     $updateCartStmt = $pdo->prepare("
         UPDATE cart_items ci
         JOIN cart c ON ci.cart_id = c.id
@@ -210,7 +217,7 @@ try {
 
     header('Location: ../User-Pages/invoice.php?order_id=' . $orderId . '&success=1');
     exit();
-    
+
 } catch (Exception $e) {
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
@@ -220,5 +227,4 @@ try {
 
     header('Location: ../User-Pages/cart.php?error=' . urlencode($e->getMessage()));
     exit;
-    
 }

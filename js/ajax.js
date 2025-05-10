@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Special handling for session timeout
                 if (error.message.includes('login')) {
                     if (confirm('Your session expired. Would you like to login now?')) {
-                        window.location.href = '/login.php?redirect=' + encodeURIComponent(window.location.pathname);
+                        window.location.href = '../login/customer_login.php?redirect=' + encodeURIComponent(window.location.pathname);
                     }
                     return;
                 }

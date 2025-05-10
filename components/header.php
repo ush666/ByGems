@@ -63,6 +63,18 @@ if (isset($_SESSION['user_id'])) {
         die("Database error: " . $e->getMessage());
     }
 }
+
+$unreadNotifCount = 0;
+
+if (isset($_SESSION['user_id'])) {
+    try {
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM notifications WHERE recipient_id = ? AND is_read = 0");
+        $stmt->execute([$_SESSION['user_id']]);
+        $unreadNotifCount = (int) $stmt->fetchColumn();
+    } catch (Exception $e) {
+        $unreadNotifCount = 0; // fallback if error
+    }
+}
 ?>
 
 
@@ -87,11 +99,127 @@ if (isset($_SESSION['user_id'])) {
         <!-- Offcanvas Menu for Mobile -->
         <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">ByGems</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body justify-content-center">
                 <ul class="navbar-nav">
+                <div class="me-auto d-block d-sm-none">
+                        <?php $isLoggedIn = isset($_SESSION['user_id']); ?>
+
+                        <?php if ($isLoggedIn): ?>
+                            <ul class="navbar-nav d-flex flex-row gap-2">
+                                <style>
+                                    /* Show dropdown menu on hover */
+                                    .nav-item.dropdown:hover>.dropdown-menu {
+                                        display: block;
+                                        margin-top: 0;
+                                        top: 40px;
+                                        right: 0;
+                                    }
+                                </style>
+                                                                <!-- Profile Dropdown -->
+                                                                <li class="nav-item d-flex align-items-center position-relative gap-2">
+                                    <a class="text-decoration-none position-relative" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <img src="../img/default.png" alt="Profile Picture" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                        <i class="dropdown-icon position-absolute bottom-0 end-0 drop-down-icon">
+                                            <ion-icon name="chevron-down" style="color: #ffb300;"></ion-icon>
+                                        </i>
+                                    </a>
+
+                                    <ul class="dropdown-menu dropdown-menu position-absolute start-0 top-100 z-3 p-1">
+                                        <a href="../user-dashboard/user-profile.php">
+                                            <li class="px-3 py-1">
+                                                <span><?= ucfirst($user['name']) ?></span>
+                                                <div class="text-muted font-01"><?= $user['email'] ?></div>
+                                            </li>
+                                        </a>
+                                        <a href="../User-Pages/invoice-list.php">
+                                            <li class="px-3 py-1">
+                                                <span>Invoice List</span>
+                                            </li>
+                                        </a>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li>
+                                            <a href="../includes/logout.php">
+                                                <button type="submit" class="btn w-100 text-start d-flex justify-content-between align-items-center gap-3 bg-transparent border-0">
+                                                    <span class="text-muted font-0">Log out</span>
+                                                    <span><ion-icon name="log-out-outline"></ion-icon></span>
+                                                </button>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <!-- Notifications -->
+                                <li class="nav-item dropdown position-relative font-2 d-flex align-items-center font-brown me-2">
+                                    <a class="nav-link d-flex align-items-center position-relative" href="../user-dashboard/notification.php">
+                                        <ion-icon name="notifications-outline" size="medium"></ion-icon>
+                                        <?php if (isset($unreadNotifCount) && $unreadNotifCount > 0): ?>
+                                            <span class="position-absolute top-0 end-0 badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                                                <?= $unreadNotifCount ?>
+                                            </span>
+                                        <?php endif; ?>
+                                    </a>
+                                </li>
+
+                                <!-- Cart -->
+                                <li class="nav-item <?= $cart ?> dropdown position-relative font-2 d-flex align-items-center font-brown me-2">
+                                    <a class="nav-link d-flex align-items-center" href="#" id="cartDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <ion-icon name="cart-outline" size="medium"></ion-icon>
+                                        <?php if (count($cartItems) > 0): ?>
+                                            <span class="position-absolute top-0 end-0 badge rounded-pill bg-danger" style="font-size: 10px;">
+                                                <?= count($cartItems) ?>
+                                            </span>
+                                        <?php endif; ?>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end position-absolute cart-dropdown z-3" aria-labelledby="cartDropdown">
+                                        <li class="px-3 pb-2 text-center"><strong>Cart</strong></li>
+
+                                        <?php if (!empty($cartItems)): ?>
+                                            <?php foreach ($cartItems as $item): ?>
+                                                <?php
+                                                $price = $item['cart_price'] !== null ? $item['cart_price'] : $item['service_price'];
+                                                $itemTotal = $price * $item['quantity'];
+                                                ?>
+                                                <li>
+                                                    <div class="cart-item">
+                                                        <?php if (!empty($item['image'])): ?>
+                                                            <img class="object-fit-cover" src="<?= '../uploads/' . htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['service_name']) ?>">
+                                                        <?php endif; ?>
+                                                        <div>
+                                                            <h6><?= htmlspecialchars($item['service_name']) ?></h6>
+                                                            <p>₱ <?= number_format($price, 2) ?> × <?= $item['quantity'] ?></p>
+                                                            <p class="item-total">₱ <?= number_format($itemTotal, 2) ?></p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            <?php endforeach; ?>
+
+                                            <li class="px-3 pt-2 row">
+                                                <div class="col-6 cart-total">Total: ₱ <?= number_format($cartTotal, 2) ?></div>
+                                                <a href="../User-Pages/cart.php" class="col-6 cart-btn text-center">View Cart</a>
+                                            </li>
+                                        <?php else: ?>
+                                            <li class="px-3 py-2 text-center">
+                                                <p>Your cart is empty</p>
+                                                <a href="../services/prop-up_packages.php" class="btn btn-sm btn-purple text-white bold">Browse Services</a>
+                                            </li>
+                                        <?php endif; ?>
+                                    </ul>
+                                </li>
+                            </ul>
+
+                        <?php else: ?>
+                            <!-- If not logged in -->
+                            <div class="d-flex">
+                                <a class="btn btn-outline-dark me-1 ps-3 pe-3" style="border-radius: 0px; border-top-left-radius: 20px; border-bottom-left-radius: 20px; font-size: 0.8rem; transition: all 0.3s;" href="../login/customer_login.php">Login</a>
+                                <a class="btn btn-dark ps-3 pe-3" style="border-radius: 0px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; font-size: 0.8rem; color: white !important; transition: all 0.3s;" href="../User-Pages/customer_register.php">Sign Up</a>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                     <li class="nav-item font-sm <?= $home ?>">
                         <a class="nav-link" href="../User-Pages/home.php">Home</a>
                     </li>
@@ -118,15 +246,10 @@ if (isset($_SESSION['user_id'])) {
             </div>
         </div>
 
-        <div class="ms-auto">
-            <?php
-            // Simulating user authentication status (replace with your actual session check)
-            $isLoggedIn = isset($_SESSION['user_id']);
-            ?>
+        <div class="ms-auto d-none d-sm-block">
+            <?php $isLoggedIn = isset($_SESSION['user_id']); ?>
 
             <?php if ($isLoggedIn): ?>
-
-                <!-- Show Profile Dropdown if Logged In -->
                 <ul class="navbar-nav d-flex flex-row gap-2">
                     <style>
                         /* Show dropdown menu on hover */
@@ -138,25 +261,30 @@ if (isset($_SESSION['user_id'])) {
                         }
                     </style>
 
+                    <!-- Notifications -->
                     <li class="nav-item dropdown position-relative font-2 d-flex align-items-center font-brown me-2">
-                        <a class="nav-link d-flex align-items-center" href="../user-dashboard/notification.php">
+                        <a class="nav-link d-flex align-items-center position-relative" href="../user-dashboard/notification.php">
                             <ion-icon name="notifications-outline" size="medium"></ion-icon>
+                            <?php if (isset($unreadNotifCount) && $unreadNotifCount > 0): ?>
+                                <span class="position-absolute top-0 end-0 badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+                                    <?= $unreadNotifCount ?>
+                                </span>
+                            <?php endif; ?>
                         </a>
                     </li>
-                    <!--HERE-->
+
+                    <!-- Cart -->
                     <li class="nav-item <?= $cart ?> dropdown position-relative font-2 d-flex align-items-center font-brown me-2">
-                        <a class="nav-link d-flex align-items-center" href="#" id="cartDropdown" role="button">
+                        <a class="nav-link d-flex align-items-center" href="#" id="cartDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <ion-icon name="cart-outline" size="medium"></ion-icon>
                             <?php if (count($cartItems) > 0): ?>
-                                <span class="position-absolute top-0 end-0  badge rounded-pill bg-danger" style="font-size: 10px;">
+                                <span class="position-absolute top-0 end-0 badge rounded-pill bg-danger" style="font-size: 10px;">
                                     <?= count($cartItems) ?>
                                 </span>
                             <?php endif; ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end position-absolute cart-dropdown z-3" aria-labelledby="cartDropdown">
-                            <li class="px-3 pb-2 text-center">
-                                <strong>Cart</strong>
-                            </li>
+                            <li class="px-3 pb-2 text-center"><strong>Cart</strong></li>
 
                             <?php if (!empty($cartItems)): ?>
                                 <?php foreach ($cartItems as $item): ?>
@@ -167,7 +295,7 @@ if (isset($_SESSION['user_id'])) {
                                     <li>
                                         <div class="cart-item">
                                             <?php if (!empty($item['image'])): ?>
-                                                <img class="objeect-fit-cover" src="<?= '../uploads/' . htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['service_name']) ?>">
+                                                <img class="object-fit-cover" src="<?= '../uploads/' . htmlspecialchars($item['image']) ?>" alt="<?= htmlspecialchars($item['service_name']) ?>">
                                             <?php endif; ?>
                                             <div>
                                                 <h6><?= htmlspecialchars($item['service_name']) ?></h6>
@@ -182,22 +310,19 @@ if (isset($_SESSION['user_id'])) {
                                     <div class="col-6 cart-total">Total: ₱ <?= number_format($cartTotal, 2) ?></div>
                                     <a href="../User-Pages/cart.php" class="col-6 cart-btn text-center">View Cart</a>
                                 </li>
-
                             <?php else: ?>
                                 <li class="px-3 py-2 text-center">
                                     <p>Your cart is empty</p>
                                     <a href="../services/prop-up_packages.php" class="btn btn-sm btn-purple text-white bold">Browse Services</a>
                                 </li>
                             <?php endif; ?>
-
                         </ul>
                     </li>
 
+                    <!-- Profile Dropdown -->
                     <li class="nav-item d-flex align-items-center position-relative gap-2">
                         <a class="text-decoration-none position-relative" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <img src="../img/default.png" alt="Profile Picture" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-
-                            <!-- Dropdown Icon -->
                             <i class="dropdown-icon position-absolute bottom-0 end-0 drop-down-icon">
                                 <ion-icon name="chevron-down" style="color: #ffb300;"></ion-icon>
                             </i>
@@ -222,9 +347,7 @@ if (isset($_SESSION['user_id'])) {
                                 <a href="../includes/logout.php">
                                     <button type="submit" class="btn w-100 text-start d-flex justify-content-between align-items-center gap-3 bg-transparent border-0">
                                         <span class="text-muted font-0">Log out</span>
-                                        <span>
-                                            <ion-icon name="log-out-outline"></ion-icon>
-                                        </span>
+                                        <span><ion-icon name="log-out-outline"></ion-icon></span>
                                     </button>
                                 </a>
                             </li>
@@ -233,7 +356,7 @@ if (isset($_SESSION['user_id'])) {
                 </ul>
 
             <?php else: ?>
-                <!-- Show Login and Sign Up Buttons if Logged Out -->
+                <!-- If not logged in -->
                 <div class="d-flex">
                     <a class="btn btn-outline-dark me-1 ps-3 pe-3" style="border-radius: 0px; border-top-left-radius: 20px; border-bottom-left-radius: 20px; font-size: 0.8rem; transition: all 0.3s;" href="../login/customer_login.php">Login</a>
                     <a class="btn btn-dark ps-3 pe-3" style="border-radius: 0px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; font-size: 0.8rem; color: white !important; transition: all 0.3s;" href="../User-Pages/customer_register.php">Sign Up</a>

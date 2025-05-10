@@ -174,3 +174,15 @@ hr {
 .bg-orange {
     background-color: #e2aa03;
 }
+
+.active>.page-link, .page-link.active {
+    z-index: 3;
+    color: #ffffff;
+    background-color: #6c63ff;
+    border-color: #6c63ff;
+}
+
+.form-check-input:checked {
+    background-color: #6c63ff;
+    border-color: #6c63ff;
+}

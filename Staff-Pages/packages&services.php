@@ -228,8 +228,8 @@ $categories = explode("','", $matches[1]); // Extract ENUM values into an array
 
                 <!-- Users Table -->
                 <div class="table-container">
-                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addServiceModal">
-                        + Add
+                    <button type="button" class="btn btn-purple" data-bs-toggle="modal" data-bs-target="#addServiceModal">
+                        New Service
                     </button>
 
                     <table id="servicesTable" class="table table-hover table-striped" style="width:100%">
@@ -306,9 +306,9 @@ $categories = explode("','", $matches[1]); // Extract ENUM values into an array
         <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <form method="post" enctype="multipart/form-data">
-                    <div class="modal-header">
+                    <div class="modal-header bg-purple text-white bold">
                         <h5 class="modal-title" id="addServiceModalLabel">Create</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class=" btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
                     <div class="modal-body">
@@ -368,8 +368,8 @@ $categories = explode("','", $matches[1]); // Extract ENUM values into an array
                     </div>
 
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Add Service</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-purple">Add Service</button>
                     </div>
                 </form>
             </div>

@@ -80,6 +80,8 @@ section {
 .card {
     border: none;
     transition: all 0.3s;
+    display: flex;
+    justify-content: space-between;
 }
 
 .card:hover {

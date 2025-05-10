@@ -64,8 +64,8 @@
             font-size: 14px;
             margin-right: 5px;
             border-radius: 25px !important;
-            box-shadow:  5px 5px 11px #bebebe,
-             -5px -5px 11px #ffffff;
+            box-shadow: 5px 5px 11px #bebebe,
+                -5px -5px 11px #ffffff;
         }
 
         .view-btn {
@@ -84,8 +84,6 @@
         .mt-6 {
             margin-top: 6rem;
         }
-
-
     </style>
 </head>
 
@@ -113,7 +111,8 @@
                 er.client_name,
                 er.celebrant_name,
                 er.deposit_amount,
-                er.remaining_balance
+                er.remaining_balance,
+                er.request_status
             FROM orders o
             JOIN event_request er ON o.order_id = er.order_id
             WHERE o.user_id = :user_id
@@ -131,11 +130,11 @@
                         <th>Order ID</th>
                         <th>Date</th>
                         <th>Client</th>
-                        <th>Celebrant</th>
+                        <!--<th>Celebrant</th>-->
                         <th>Event Type</th>
                         <th>Event Date</th>
                         <th>Total Amount</th>
-                        <th>Deposit</th>
+                        <!--<th>Deposit</th>-->
                         <th>Balance</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -147,20 +146,29 @@
                             <td><?= $order['order_id'] ?></td>
                             <td><?= date('M j, Y', strtotime($order['order_date'])) ?></td>
                             <td><?= htmlspecialchars($order['client_name']) ?></td>
-                            <td><?= htmlspecialchars($order['celebrant_name']) ?></td>
+                            <!--<td><?= htmlspecialchars($order['celebrant_name']) ?></td>-->
                             <td><?= htmlspecialchars($order['event_type']) ?></td>
                             <td><?= date('M j, Y', strtotime($order['event_date'])) ?></td>
                             <td>₱<?= number_format($order['total_amount'], 2) ?></td>
-                            <td>₱<?= number_format($order['deposit_amount'], 2) ?></td>
+                            <!--<td>₱<?= number_format($order['deposit_amount'], 2) ?></td>-->
                             <td>₱<?= number_format($order['remaining_balance'], 2) ?></td>
                             <td>
                                 <span class="payment-status status-<?= strtolower($order['payment_status']) ?>">
                                     <?= ucfirst($order['payment_status']) ?>
                                 </span>
                             </td>
-                            <td>
+                            <td class="d-flex gap-2">
                                 <a href="../User-Pages/invoice.php?order_id=<?= $order['order_id'] ?>" class="action-btn btn-purple text-white bold">View</a>
+                                <?php if (isset($order['request_status']) && $order['request_status'] === 'pending'): ?>
+                                    <form id="cancel-form-<?= $order['order_id'] ?>" action="../events/cancel_request.php" method="POST" style="display: inline;">
+                                        <input type="hidden" name="order_id" value="<?= $order['order_id'] ?>">
+                                        <button type="button" class="action-btn bg-danger text-white fw-bold" style="border: none;" onclick="confirmCancel(<?= $order['order_id'] ?>)">
+                                            Cancel
+                                        </button>
+                                    </form>
+                                <?php endif; ?>
                             </td>
+
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -219,6 +227,24 @@
                 ] // Sort by order date descending
             });
         });
+    </script>
+    <script>
+        function confirmCancel(orderId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This will cancel your request!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, cancel it!',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('cancel-form-' + orderId).submit();
+                }
+            });
+        }
     </script>
 </body>
 
